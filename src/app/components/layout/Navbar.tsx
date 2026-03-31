@@ -61,6 +61,16 @@ export default function Navbar() {
         </div>
       </Link>
 
+      <Link
+        href="/rss.xml"
+        title="RSS"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="cursor-target flex items-center justify-center"
+      >
+        <Icon icon="ri:rss-line" />
+      </Link>
+
       <ToggleTheme />
       <SearchDialog />
     </div>
