@@ -5,7 +5,7 @@ import { join } from "path";
 
 export const dynamic = "force-dynamic";
 
-const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://linhan.fun";
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://zeroanon.com";
 const postsDirectory = join(process.cwd(), "/src/page");
 const EXCLUDE_DIRS = ["friends"];
 
