@@ -1,0 +1,785 @@
+---
+title: 关于Mysql的一些笔记
+date: 2026-04-02 10:26:00
+duration: 30min
+type: note
+---
+
+> 前面说过，我最近在写一个网站，后端以前一点都不会，所以现在从零开始学习 ，主要先学习PHP, phpThink,phpStorm,mysql
+
+今天记一下mysql的一些小知识点：
+
+# 关于SQL语句的分类
+
+> sql语句有好多，最好分门别类，这样容易记忆
+
+```js
+DQL:
+ 数据查询语言 (凡是带有select关键字的都是查询语句) selsect...
+```
+
+```js
+DML:
+数据操作语言 (凡是对表当中的数据进行增删改的都是DML)
+    insert 增
+    delete 删
+    updata 改
+```
+
+```js
+DML:
+数据操作语言 (DDL主要操作的是表的结构，不是表的数据，例如删除列)
+    create 新建 等同于增
+    drop   删除
+    alter  修改
+```
+
+```js
+TCL:
+事务控制语言
+    事务提交： commit
+    事务回滚： rollback
+```
+
+```js
+DCL:
+数据控制语言
+    grant 授权
+    revoke 撤销授权
+```
+
+# 一些命令
+
+- 导入sql文件中的表： **source + 文件路径**
+- 查看表中的数据： **select \* form 表名**
+
+- 不看表的数据只看表的结构： **desc 表名**
+- 查看版本号： **select version()**
+- 查看当前使用数据库： **select datebase**
+
+# 简单查询
+
+- 查询单个字段： **select 字段名 form 表名**
+- 查询多个字段：**select 字段1，字段2，字段3 form 表名** | **select \* form 表名**
+- 支持起别名: **as** 别名里面有空格则 **select 字段名 '别名' form 表名**
+- 字段可以参与数学表达式
+
+# 条件查询
+
+```
+语法格式：
+     select
+         字段1，字段2
+     from
+         表名
+     where
+         条件
+```
+
+# 条件分类
+
+- 例如：**select name age form user where age >= 20**
+- &
+- < =
+- _>_
+- between...and... **在两个值之间** 例如： **select name , age from user between 18 and 20** 注意必须遵从**左小右大的闭区间**
+- is null **是null** 例如：**select name , age, like form user where is null** 在数据库中null不能使用 **=** 衡量
+- is not null **不为空**
+- and **并且**
+- or **或者** 例如：**select name , age from user where age = 18 or age = 20**
+- in **包含** 例如：**select name , age form user where age in (18,20)** 只查找符合条件的值
+- not **取反**
+- like **模糊查询 支持 % \_ 区配** 例如：**select name from user where name like '%o%'**
+- % **匹配任意字符**
+- \_ **一个下划线匹配一个字符** 例如：**select name from user where name like '\_o%'**
+
+> and 和 or 同时出现有没有 优先级 问题??? **有！先执行and 后执行 or** 例如：**select \* from user where age > 20 and ( love = 'notion' or love = 'linhan' )**
+
+## 排序(总是在最后执行)
+
+- 降序: **select name , age from user order by age desc**
+- 升序: **select name , age from user order by age asc**
+- 按照多个字段排序：**select name ,age from user order by age sesc , name asc** 先排序age，年龄相同的情况下排序name
+
+## 数据处理函数 单行处理函数 (一个输入对应一个输出)
+
+- Lower **转小写** --- **select Lower(name) as uname from user**
+- upper **转大写** --- **select substr(name,1,1) from user 起始下标从1开始**
+- substr **取子串 （substr(被截取的字符串，起始下标，截取的长度)）**
+- trim **去空格**
+- str_to_date **字符串转日期**
+- date_format **格式化日期**
+- format **设置千分位**
+- round **四舍五入** --- **selset round(12.02556,1) from user**
+- rand() **随机数**
+
+## 分组函数 多行处理函数(输入多行最终输出一行)
+
+---必须先分组再使用，如果没有对表进行分组，那么整张表默认为一组
+
+- count **计数** --- **select count( \* ) from user 统计总条数**
+- sum **求和**
+- avg **平均值**
+- max **最大值** --- **select max(age) from user**
+- min **最小值**
+- having **过滤**
+
+**注意：** 分组函数自动忽略null ，分组函数不能直接使用在where 例如：**select age from user age > min(age)**
+
+## 分组查询 (先分组，然后对每一组数据操作)
+
+- **select ... from ... group by ...** where执行的时候还没有分组
+
+## 单表查询总结
+
+```js
+ 执行顺序：
+ select
+     ...
+ from
+     ...
+ where
+     ...
+ group by
+     ...
+ having
+     ...
+ order by
+     ...
+
+ 示例：
+ 找出每个工作岗位平均薪资 要求显示平均薪资大于1500 除了notion之外，要求按照平均薪资降序排列
+
+     selset
+         job , avg(sal) as (avgsal)
+     form
+         user
+     where
+         job <> 'notion'
+     group by
+         job
+     having
+         avg(sal) > 1500
+     order by
+        avgsal desc;
+
+```
+
+示例：
+
+```js
+1. 去除重复记录  注意：原表数据不会被修改哦！只能出现先在所有字段的最前方
+    select distinct job from emp
+```
+
+## 连表查询 (多张表之间跨表查询)
+
+1. 表连接的分类 ： SQL92 SQL99
+2. 表连接的方式 ：
+
+-     内连接 ： 等值连接  非等值连接  自连接
+-        外连接 ： 左外连接(左连接)  右外连接(右连接)
+-        全连接
+
+### 如果两张表连接没有任何限制 ----> 得到两张表的总数之积 (笛卡尔积现象)
+
+**select name , gae from user sex**
+
+### 连接时加条件(避免笛卡尔积) 但是此时匹配的次数依旧和之前一样
+
+**select name , age from user , sex where user.id = sex.id**
+
+### 等值连接
+
+```
+案例：
+查询每个员工所在部门名称，显示员工名和部门名
+SQL92语法：
+    select
+        e.name , d.name //表的别名
+    from
+        emp e , dept d
+    where
+        e.deptno = d.deptno
+缺点：结构不清晰，表连接条件和后期筛选的条件都放到了where
+SQL99语法：
+    select
+        e.name , d.name //表的别名
+    from
+        emp e
+    inner join //内连接 可以省略
+        dept d
+    on
+        e.deptno = d.deptno
+优点：表连接的条件是独立的
+```
+
+### 非等值连接
+
+```
+案例：
+  找出每个员工的薪资等级，要求显示员工名，薪资，薪资等级
+   select
+        e.name , e.sal , s.grade //表的别名
+    from
+        emp e
+    inner join //内连接 可以省略
+        salgrade s
+    on
+        e.sal between s.losal and s.hisal //条件不是 = 关系
+```
+
+### 自连接 (技巧：一张表看成两张表)
+
+```
+案例：
+ 查询员工的上级领导，要求显示员工名和对应的领导名
+  select
+      a.name as '员工名' ， b.name as '领导名'
+   from
+       emp a
+   inner join
+        emp b
+   on
+       a.mgr = b.empno
+```
+
+```js
+
+```
+
+### 右外连接 (会产生主次关系)
+
+```
+案例：
+  select
+     e.name , d.name
+   from
+      emp e right join dept d
+   on
+       a.deptno = b.deptno
+注意： right代表 将关键字右边的这张表看成是主表，主要是为了将这张表的数据全部查询出来，捎带着关联查询左边的表
+```
+
+### 左外连接 (会产生主次关系)
+
+```
+案例：
+  select
+     e.name , d.name
+   from
+      emp e left join dept d
+   on
+       a.deptno = b.deptno
+
+```
+
+**外连接的查询结果条数一定的是 >= 内连接的查询结果条数**
+
+### 三张表和四张表怎么连接
+
+```
+语法：
+    select
+        ...
+    from
+        a
+    join
+        b
+    on
+        a和b的连接条件
+    join
+        c
+    on
+        a和c的连接条件
+    join
+        d
+    on
+        a和d的连接条件
+```
+
+## 子查询
+
+**select语句中嵌套select语句，被嵌套的welect语句称为子查询**
+
+### 子查询都可以出现在什么位置
+
+```
+select
+    ...(select)
+from
+    ...(select)
+where
+    ...(select)
+```
+
+```
+案例:
+找出比最低工资高的员工姓名和工资
+第一步：查询最低工资是多少
+第二步：找出>800的
+第三步：合并
+🥳：select name , sal from emp where sal > (select min(sal) from emp)
+```
+
+#### from子句中的子查询
+
+注意：**from后面的子查询，可以将子查询的查询结果当作一张临时表**
+
+```
+案例:
+找出每个岗位的平均工资的薪资等级
+第一步：查询平均工资(按照岗位分组求平均值)
+第二步：表连接
+第三步：合并
+🥳：
+select
+    t.* , s.grade
+from
+    (select job , avg(sal) as avgsal from emp group by job) t
+join
+    salgrade s
+on
+    t.avgsal between s.losal and s.hisal
+```
+
+## union 合并查询结果
+
+注意： **union在进行结果集合并的时候要求列数相同**
+
+```
+案例:
+查询工作岗位是 技术部 和 运营 的员工
+🥳：
+select
+    name , job
+from
+   emp
+where
+    job = '技术部'
+union // 合并查询结果
+select
+    name , job
+from
+   emp
+where
+    job = '运营'
+```
+
+## limit (将查询结果的一部分数据拿出来 --- 分页查询)
+
+语法： **limit(startIndex , length)**
+
+注意：**limit在order by 之后执行**
+
+```
+案例:
+按照薪资排序，取出排名在💴名的员工
+
+select
+    name , sal
+from
+   emp
+order by
+    sal desc
+limit 5 // 取前5条
+```
+
+## 分页
+
+```
+🥳每页显示pageSize条记录
+    第pageNum页 ： limit (pageNum - 1) * pageSize , pageSize
+```
+
+# 建表 DDL语句
+
+## 建表语法
+
+**create table 表名 (字段名1 数据类型 ， 字段名2 数据类型，...)**
+
+## 数据类型
+
+```
+ varchar     可变长度的字符串(最长255)，会根据实际的动态长度分配空间 速度慢
+ char        不变长度的字符串(最长255)，速度快，但使用不当会造成空间浪费
+ int         整数
+ bigint      数字中的长整型，等同与java中的lang
+ float       单精度浮点型
+ double      双精度浮点型
+ date        短日期
+ datetime    长日期
+ clob        字符大对象 最多可以存储4G的字符串，例如存一篇文档，说明...
+ blob        二进制大对象，图片，声音，视频，插入数据时，必须使用IO流才行
+```
+
+```
+示例：
+t_movie(电影表)
+编号 ：              no(bigint)
+名字 ：              name(varchar)
+故事情节 ：          history (clob)
+时长 ：              tome (double | float)
+上映时间 ：          playtime (date)
+海报 ：              image(blob)
+```
+
+## 删除表
+
+**drop table 表名** --- 当不存在的时候会报错
+
+**drop table if exists 表名** --- 当表存在的时候再删除
+
+## 插入数据
+
+**insert into 表名 (字段1, 字段2...) values(值1，值2 ...)**
+
+可以在建表的时候给指定字段指定默认值
+
+insert中的字段名可以省略 但值必须一一对应
+
+##### insert 一次插入多条记录
+
+**insert into 表名 (字段1, 字段2...) values(值1，值2 ...)，(值1，值2 ...)，(值1，值2 ...)，(值1，值2 ...)**
+
+#### 字符串转日期格式
+
+**str_to_date('字符串日期' ， '日期格式')**
+
+mysql的日期格式有 ： **%Y(年) %m（月） %d(日) %h(时) %i(分) %s(秒)**
+
+#### 将日期类型转换成特定字符串(date_format)
+
+**date_format(日期类型数据 , '日期格式（%m/%d/%Y）')**
+
+## 修改表
+
+语法：
+**update 表名 set 字段名1=值1 ， 字段名2=值2 ， 字段名3=值3... where条件**
+
+**update user set name='linhan' , age=20 , remark='加油！追风赶月莫停留，平芜尽处是春山' where id = 1**
+
+注意：**没有条件限制会将全表更新**
+
+## 删除表
+
+#### 逻辑删除
+
+原理：表中的数据被删除了，但是在硬盘上的真实存储空间不会被释放，删除效率低，但是支持回滚
+
+语法：
+**delete from 表名 where 条件**
+
+**delete from user where id = 1**
+
+注意：**没有条件限制会将全表更新**
+
+##### 物理删除
+
+> truncate ： truncate table 表名； 速度快，但是不支持回滚
+
+## 快速创建表
+
+**create table emp2 as select \* from emp** 把查询结果当作一张表新建
+
+# 约束 (constraint)
+
+保证表中的数据有效！！！
+
+## 常见的约束包括
+
+- 非空约束 **not null**
+- 唯一性约束 **unique**
+- 主键约束 **primary key (PK)**
+- 外键约束 **foreign key(FK)**
+- 检查约束
+
+## 非空约束
+
+约束的字段不能为空
+
+```
+create table user (
+    id int,
+    name varchar(255) not null
+)
+```
+
+##### xxxx.sql 这种文件被称为sql文件 sql文件中编写了大量脚本文件，我们在执行sql执行sql脚本文件的时候，该文件会全部执行 --- 批量执行sql文件， 使用 source + 绝对路径
+
+## 唯一性约束
+
+##### unique约束的字段不能重复，但是可以为null
+
+```
+create table user (
+    id int,
+    name varchar(255) unique
+)
+```
+
+##### 约束添加到列后面的被称为列级约束，没有添加到表后面的被称为表级约束
+
+##### 这个字段联合唯一？？？
+
+```
+create table user (
+    id int,
+    name varchar(255),
+    unique(name,id) //联合唯一
+)
+```
+
+#### unique和not null 可以联合吗？？？
+
+```
+create table user (
+    id int,
+    name varchar(255),
+    unique(name,id) not null unique  //这时会被默认当作主键
+)
+```
+
+#### 如果一个字段同时被 not noll 和 unique约束，这个字段自动变成主键
+
+## 主键约束(primary key) 例如ID
+
+- 主键约束
+- 主键字段
+- 主键值
+
+##### 主键值是每一行记录的唯一标识，如何表都应该有主键，没有主键，表无效
+
+##### 主键的特征：not null + unique (主键值不能是null 同时也不能重复)
+
+#### 怎么给一张表添加主键约束呢？？？
+
+##### 可以使用表级约束，一张表主键约束只能有一个
+
+##### 主键的类型 ： int bigint char 一般是定长
+
+```
+create table user (
+    id int primary key,
+    name varchar(255),
+)
+```
+
+##### id和name联合起来做主键叫做复合主键，但不建议使用
+
+##### 主键的分类
+
+- 自然主键 主键值是一个自然数和业务没有关系
+- 业务主键 主键值和业务紧密相连，例如拿银行卡号做主键
+
+### 在mysql有一种机制可以帮助我们自动维护主键值
+
+```
+create table user (
+    id int primary key auto_increment,//表示自增
+    name varchar(255),
+)
+```
+
+## 外键约束
+
+##### 保证多表之间数据连接的有效性
+
+- 外键字段
+- 外键约束
+- 外键值
+
+#### 使用外键约束连接另一张表的字段，连接的称为子表，被连接的称为父表，删除时先删子表
+
+```
+// 班级表
+create table class (
+    class_id int primary key,
+    class_name varchar
+)
+
+// 学生表
+create table student (
+    id int primary key auto_increment,
+    name varchar,
+    cl_id int,
+    foreign key(cl_id) references class(class_id) //外键约束，连接班级表的id
+)
+```
+
+#### 子表中的外键引用的父表中的某个字段，被引用的这个字段必须是主键吗？？？
+
+不一定，但至少具有unique约束，具有唯一性
+
+#### 外键可以为null吗？？？
+
+可以
+
+# 事务(transaction)
+
+#### 一个事务就是一个完整的业务逻辑
+
+假设转账，A账户向B账户转账10000，A账户钱减去10000，B账户钱加上10000，这就是一个完整的业务逻辑，
+
+**以上操作是一个最小的工作单元，两个update语句要么同时成功，要么同时失败**
+
+#### 只有DML语句才会有事务一说 ---> insert delete update
+
+#### 一个事务其实就是多条DML语句同时成功或者同时失败
+
+#### 事务是怎么做到多条DML语句同时成功和同时失败的呢？？？
+
+>     InnoDB存储引擎：提供了一组用来记录事务性活动的日志文件
+
+```
+事务开启了：
+insert
+insert
+insert
+delete
+...
+事务结束了
+
+在事务的执行过程中，每一条DML的操作都会记录到事务性活动的日志文件
+我们可以提交事务也可以回滚事务
+```
+
+- 提交事务 --- **清空事务性活动日志文件，将数据全部彻底持久化到数据库，标志着全部成功的结束**
+- 回滚事务 --- **将之前所有的DML操作全部撤销，并且清空事务性活动的日志文件，同样也标志着事务的结束，是全部失败的结束**
+
+#### 怎么提交和回滚事务
+
+- 提交事务 ---- commit语句
+- 回滚事务 -----rollback语句
+
+#### mysql默认情况下支持自动提交事务
+
+怎么关闭呢？？？
+
+> start transction ---关闭自动提交
+
+#### 事务包括4个特性
+
+- A 原子性 --- 一个最小的工作单元
+- C 一致性 --- 要么同时成功，要么同时失败
+- I 隔离性 --- 两个事务之间具有一定隔离
+- D 持久性 --- 事务的最终结束的保障，事务提交，就相当于将没有保存到硬盘上的数据保存到硬盘上
+
+#### 事务的隔离性
+
+事务因具体情况，隔离级别不同
+
+- 读未提交 **read uncommitted ( 最低隔离级别) --- （没有提交就能读取）**
+
+>     事务A可以读取到事务B未提交的数据 **脏数据**
+
+- 读已提交 **read committed ---（提交了才能读到）**
+
+>     事务A只能读取到事务B提交后的数据 解决了脏读现象，存在不可重复读取数据，
+>     每次读取到的都是真实数据
+
+- 可重复读 **repeareble read --- （提交之后也读不到）永远读取的都是刚开启事务时的数据**
+
+>     事务A开启之后不管是多久，每一次在事务A中读取的数据都是一致的，
+>     即使事务B将数据已经修改，并且提交了，事务A读到的数据还是没有改变，这就是可重复读
+>     解决了不可重复读取数据的问题，但是出现了幻影读
+
+- 序列化 / 串行化 **serializable (最低隔离级别)**
+  > 效率最低，解决了所有问题，这种事务级别表示事务排队，不能并发
+
+# 索引(index)
+
+#### 什么是索引 ---> 通过B-Tree数据结构存储，遵循左小右大的原则存储，采用中序遍历的方法遍历去数据
+
+索引是在数据库表的字段上添加的，是为了提高查询效率存在的一种机制
+
+一张表的一个字段可以添加一个索引，当然，多个字段联合起来也可以添加索引，相当于一本书的目录，是为了缩小扫描范围而存在的一种机制
+
+**mysql查找方式：全表扫描，按照索引查找，在实际中索引需要排序**
+
+**主键上会自动添加索引，如果一个字段上有unique约束的话，也会自动创建索引对象**
+
+**在任何数据库中，任何一张表的任何一条记录在硬盘存储上都有一个硬盘的物理存储编号**
+
+**在mysql中索引是一个单独的对象**
+
+#### 条件下需要给字段添加索引？？？
+
+- 数据量庞大
+- 该字段经常出现在where后面，以条件显示存在
+- 该字段很少被DML (insert delete update) 因为DML，索引需要重新排序
+
+**建议不要随意添加索引，建议通过主键查询，建议通过unique约束字段查询**
+
+#### 创建索引
+
+**create index emp_name_index on emp(name)** 给emp表的name字段添加索引，起名emp_name_index
+
+#### 什么时候索引失效
+
+> select \* from user where name like '%no'
+>
+> 模糊匹配当中，以%开头，没有办法走索引
+
+> 使用 or 的时候会失效，如果使用 or 那么两边的条件字段都要有索引才会走索引
+
+> 使用复合索引的时候没有使用左侧的列查找 --- 最左原则
+>
+> create index emp_name_index on emp(name，age)
+
+> 在where中索引列参加了运算，索引失效
+
+> 在where中索引列使用了函数
+
+#### 索引的分类
+
+- 单一索引
+- 复合索引
+- 主键索引
+- 唯一性索引
+- ...
+  **唯一性比较弱的字段上，添加索引作用不大**
+
+# 视图(view)
+
+#### 创建视图
+
+**create view user_view as select \* from user**
+
+#### 删除视图
+
+**drop view user**
+
+**只有DQL语句才能以view的形式创建**
+
+**我们可以面向视图进行增删查改，对视图的操作会直接影响到原表**
+
+#### 视图对象在实际开发中到底起什么作用
+
+假设有一条非常复杂的sql语句，而这条sql语句需要在不同位置上反复执行，每一次使用这个sql语句的时候都需要重新编写，很长很麻烦的？？
+
+> 我们可以吧这条sql语句以视图形式新建，在需要编写这条SQL语句的时候直接使用视图对象，可以简化开发，利于后期维护，修改的时候只需要修改一个位置就行，只需要修改sql语句所映射的sql语句
+
+**增删改查 ---- CRUD**
+
+# 数据库设计范式
+
+#### 第一范式
+
+要求任何一张表都有主键，每一个字段原子性不可再分
+
+#### 第二范式
+
+要求在第一范式的基础上，要求所有非主键字段**完全**依赖主键，不要产生部分依赖
+
+#### 第三范式
+
+要求在第二范式的基础上，要求所有非主键字段**直接**依赖主键，不要产生传递依赖
+
+#### 口诀
+
+**多对多，三张表，关系表两个外键**
+
+**一对多，两张表，多的表加外键**
+
+**一对一，外键唯一**
