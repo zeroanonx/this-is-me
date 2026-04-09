@@ -15,7 +15,7 @@ export default function Footer() {
           >
             <TextLoop className="text-xs text-zinc-500">
               <span>
-                © 2025 <span className="text-(--accent-primary)">LinHan.</span>
+                © 2025 <span className="text-(--accent-primary)">ZeroAnon.</span>
               </span>
               <span>
                 Made with ❤️ by

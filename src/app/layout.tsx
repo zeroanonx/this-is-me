@@ -25,7 +25,7 @@ const inter = Inter({
 // 默认全局的 SEO 信息（标题、描述、OG 图）
 export const metadata: Metadata = {
   title: `${MATE_TITLE}`,
-  description: `LinHan's personal website`,
+  description: `ZeroAnon's personal website`,
   openGraph: {
     images: [MATE_TITLE_IMG],
   },
