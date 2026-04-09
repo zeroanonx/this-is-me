@@ -55,10 +55,10 @@ export default function BlogContainer({ posts }: Props) {
                       <Link
                         key={post.title}
                         href={post.slug}
-                        className="posts-list-item h-5 my-5 hover:opacity-90 cursor-pointer flex items-end"
+                        className="posts-list-item w-full h-5 my-5 hover:opacity-90 cursor-pointer flex items-end"
                         prefetch
                       >
-                        <div className="flex items-center py-2 gap-x-1 cursor-target">
+                        <div className="flex items-center py-2 gap-x-1 cursor-target w-full">
                           <span className="text-base leading-none truncate">
                             {post.title}
                           </span>

@@ -35,8 +35,8 @@ export default function SkillsPage() {
   return (
     <main className="min-h-screen">
       <section className="mx-auto flex w-full max-w-5xl flex-col px-6 pb-16 pt-10 sm:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.36em]">技能</p>
             <h1 className="mt-3 text-2xl font-light tracking-[-0.05em] sm:text-3xl">
               我最常用的一组技术栈
@@ -48,7 +48,7 @@ export default function SkillsPage() {
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-white/8 px-4 py-2 text-xs shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:border-white/20 hover:bg-white/6"
+            className="inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/8 px-4 py-2 text-xs shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:border-white/20 hover:bg-white/6 sm:self-auto"
           >
             <Icon icon="solar:arrow-left-linear" className="text-sm" />
             返回首页
