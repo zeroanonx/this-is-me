@@ -58,7 +58,7 @@ export default function BlogContainer({ posts }: Props) {
                         className="posts-list-item w-full h-5 my-5 hover:opacity-90 cursor-pointer flex items-end"
                         prefetch
                       >
-                        <div className="flex items-center py-2 gap-x-1 cursor-target w-full">
+                        <div className="flex items-center py-2 gap-x-1 cursor-target sm:w-auto w-full">
                           <span className="text-base leading-none truncate">
                             {post.title}
                           </span>
