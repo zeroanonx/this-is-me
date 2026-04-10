@@ -182,7 +182,7 @@ export const HOME_PROFILE_TAGS: HomeTagItem[] = [
  */
 export const CORE_FRONTEND_SKILLS: SkillItem[] = [
   {
-    label: "Vue.js",
+    label: "Vue",
     href: "https://vuejs.org/",
     icon: "logos:vue",
     image: "/assets/images/home/vue.png",
@@ -196,7 +196,7 @@ export const CORE_FRONTEND_SKILLS: SkillItem[] = [
     category: SKILL_CATEGORY.coreFrontend,
   },
   {
-    label: "Next.js",
+    label: "Next",
     href: "https://nextjs.org/",
     icon: "logos:nextjs-icon",
     image: "/assets/images/home/next.png",
@@ -312,7 +312,7 @@ export const FRONTEND_TOOLING_SKILLS: SkillItem[] = [
  */
 export const BACKEND_SKILLS: SkillItem[] = [
   {
-    label: "Node.js",
+    label: "Node",
     href: "https://nodejs.org/",
     icon: "logos:nodejs-icon",
     image: "/assets/images/home/node.png",
@@ -347,14 +347,7 @@ export const ALL_SKILLS: SkillItem[] = [
 /**
  * @constant 首页精选技能名称
  */
-export const FEATURED_SKILL_LABELS = [
-  "TypeScript",
-  "React",
-  "Vue.js",
-  "TailwindCSS",
-  "Vite",
-  "Nuxt",
-];
+export const FEATURED_SKILL_LABELS = ["Vue", "React", "Nuxt", "Next"];
 
 /**
  * @constant 首页精选技能列表

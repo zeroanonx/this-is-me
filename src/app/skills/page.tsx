@@ -12,11 +12,24 @@ export const metadata: Metadata = {
   description: "ZeroAnon 的完整技能页。",
 };
 
-function groupSkillsByCategory(category: SkillItem["category"]): SkillItem[] {
-  return ALL_SKILLS.filter((skill) => skill.category === category);
-}
+const SURFACE_CARD_CLASS =
+  "rounded-3xl border border-white/8 p-4 shadow-[0_18px_70px_rgba(0,0,0,0.24)]";
+const SURFACE_BUTTON_CLASS =
+  "inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/8 px-4 py-2 text-xs shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/6 sm:self-auto";
 
-function getCategoryDescription(category: SkillItem["category"]): string {
+/**
+ * @function 按分类筛选技能列表。
+ */
+const groupSkillsByCategory = (
+  category: SkillItem["category"]
+): SkillItem[] => {
+  return ALL_SKILLS.filter((skill) => skill.category === category);
+};
+
+/**
+ * @function 返回技能分类对应的中文说明。
+ */
+const getCategoryDescription = (category: SkillItem["category"]): string => {
   switch (category) {
     case "Core Frontend":
       return "核心前端基础与界面能力";
@@ -29,7 +42,7 @@ function getCategoryDescription(category: SkillItem["category"]): string {
     default:
       return "";
   }
-}
+};
 
 export default function SkillsPage() {
   return (
@@ -46,10 +59,7 @@ export default function SkillsPage() {
             </p>
           </div>
 
-          <Link
-            href="/"
-            className="inline-flex w-fit items-center gap-2 self-start rounded-full border border-white/8 px-4 py-2 text-xs shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:border-white/20 hover:bg-white/6 sm:self-auto"
-          >
+          <Link href="/" className={SURFACE_BUTTON_CLASS}>
             <Icon icon="solar:arrow-left-linear" className="text-sm" />
             返回首页
           </Link>
@@ -60,10 +70,7 @@ export default function SkillsPage() {
             const skills = groupSkillsByCategory(category);
 
             return (
-              <section
-                key={category}
-                className="rounded-3xl border border-white/8 p-4 shadow-[0_18px_70px_rgba(0,0,0,0.24)]"
-              >
+              <section key={category} className={SURFACE_CARD_CLASS}>
                 <div className="flex items-end justify-between gap-4">
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.32em]">
@@ -83,7 +90,7 @@ export default function SkillsPage() {
                       href={skill.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group rounded-[18px] border border-white/8 p-2.5 transition hover:-translate-y-0.5 hover:border-white/16"
+                      className="group rounded-[18px] border border-white/8 p-2.5 transition duration-300 hover:-translate-y-0.5 hover:border-white/16 hover:shadow-[0_12px_32px_rgba(0,0,0,0.16)]"
                     >
                       <div className="overflow-hidden rounded-[14px] border border-white/6">
                         <img
