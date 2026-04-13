@@ -34,6 +34,18 @@ export default function Navbar() {
       </Link>
 
       <Link
+        href="/friends"
+        title="Friends"
+        className="cursor-target flex items-center justify-center"
+      >
+        <span className="hidden md:block">Friends</span>
+        <Icon
+          icon="fluent-emoji-flat:love-you-gesture-light"
+          className="block md:hidden"
+        />
+      </Link>
+
+      <Link
         href="/myself"
         title="Myself"
         className="flex items-center justify-center relative group no-cursor"
@@ -44,20 +56,6 @@ export default function Navbar() {
         <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 bg-linear-to-r from-amber-400/30 to-orange-400/30 blur-md scale-150 transition-all duration-300 animate-pulse"></div>
         <div className="absolute -top-3 -right-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 group-hover:animate-bounce text-xs">
           ❤️
-        </div>
-      </Link>
-
-      <Link
-        href="/friends"
-        title="Friends"
-        className="flex items-center justify-center relative group no-cursor"
-      >
-        <div className="text-lg transition-all duration-300 ease-in-out group-hover:scale-125 group-hover:rotate-12 group-hover:drop-shadow-lg flex items-center justify-center">
-          <Icon icon="fluent-emoji-flat:love-you-gesture-light" />
-        </div>
-        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 bg-linear-to-r from-amber-400/30 to-orange-400/30 blur-md scale-150 transition-all duration-300 animate-pulse"></div>
-        <div className="absolute -top-3 -right-2 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100 group-hover:animate-bounce text-xs">
-          🍻
         </div>
       </Link>
 
