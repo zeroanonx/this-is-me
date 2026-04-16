@@ -1,4 +1,5 @@
 import { CodeBlock } from "./modules/CodeBlock";
+import VideoEmbed from "./modules/VideoEmbed";
 
 import LinkComponent from "@/app/components/ui/LinkComponent";
 import Logo from "@/app/components/ui/Logo";
@@ -14,6 +15,7 @@ import Comments from "../layout/Comments";
 export const mdxClientComponents = {
   Comments,
   CodeBlock,
+  VideoEmbed,
   LinkComponent,
   Logo,
   Image,
