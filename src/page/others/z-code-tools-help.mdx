@@ -1,0 +1,211 @@
+---
+title: z-code-tools 使用说明
+date: 2026-04-18T18:00:00Z
+duration: 10min
+---
+
+## 项目简介
+
+**z-code-tools** 是一款面向 VS Code 的结构化编码辅助插件，主要围绕两类高频工作展开：
+
+- 给大型代码文件建立清晰、可折叠、可视化的区块结构
+- 把 JSON / JavaScript 对象快速转换成 TypeScript 类型定义
+
+它不是一个追求功能堆叠的“大工具箱”，而是把你在日常编码里会反复遇到、又很容易打断节奏的几个动作收敛成一套更顺手的工作流。
+
+如果你经常维护大文件、拆分逻辑区块、整理组件结构、处理接口返回值或补全类型定义，z-code-tools 会是一个非常直接的增强层。
+
+## 视频演示
+
+### 1. 代码片段演示
+
+<VideoEmbed
+  src="https://www.youtube.com/embed/yYZk0mtUNOw"
+  title="z-code-tools 代码片段演示"
+/>
+
+### 2. 快捷键生成演示
+
+<VideoEmbed
+  src="https://www.youtube.com/embed/44jgf5cdoFQ"
+  title="z-code-tools 快捷键生成演示"
+/>
+
+### 3. JSON 转 TS 演示
+
+<VideoEmbed
+  src="https://www.youtube.com/embed/EP0qyEwuhGk"
+  title="z-code-tools JSON 转 TS 演示"
+/>
+
+## z-code-tools 能做什么
+
+当前版本主要提供以下能力：
+
+- **区块模板快速插入**：通过命令或快捷键快速生成区块注释，并自动包裹当前选中内容。
+- **双格式区块支持**：同时支持 `S / E` 和 `#region / #endregion` 两种区块风格。
+- **编辑器原生折叠接入**：识别后的区块可以直接用 VS Code 的折叠交互展开或收起。
+- **区块圆点与文本高亮**：起始区块会显示圆点，`S 名称`、`E 名称`、`#region 名称` 会参与高亮显示。
+- **概览标尺定位**：在编辑器右侧概览标尺中给出区块位置提示。
+- **异常区块提示**：缺失开始标记、缺失结束标记、嵌套未闭合时，会在编辑器中显示错误提示。
+- **JSON / JS 转 TypeScript**：支持将 JSON 或 JavaScript 对象直接转换为 `type` 或 `interface`。
+- **活动栏设置面板**：提供统一设置入口，集中管理显示开关、主题色和快捷操作。
+- **状态栏入口**：从状态栏快速打开设置面板。
+- **代码片段支持**：内置多套 snippets，可直接插入区块模板。
+
+## 区块能力说明
+
+### 一. 功能区块模板插入
+
+执行命令后，插件会先让你选择区块类型，再输入区块名称，最后自动生成对应模板。
+
+当前支持的区块类型包括：
+
+- 通用注释：`S / E` 区块
+- 通用注释：`#region` 区块
+- CSS 注释：`S / E` 区块
+- CSS 注释：`#region` 区块
+- HTML 注释：`S / E` 区块
+- HTML 注释：`#region` 区块
+- React JSX 注释：`S / E` 区块
+- React JSX 注释：`#region` 区块
+
+这套设计的重点不是“多一种注释写法”，而是让你在不同文件类型里，都能用统一方式建立结构边界。
+
+### 二. 区块识别与折叠
+
+z-code-tools 会扫描文档中的两类区块标记：
+
+- `S / E`
+- `#region / #endregion`
+
+并把它们注册成可折叠区域。
+
+支持识别的形式包括：
+
+- 通用块注释
+- `// #region` 行注释
+- HTML 注释
+- React JSX 注释
+- 带装饰星号或不带装饰星号的形式
+
+如果你习惯原生 `#region`，或者希望沿用自己现有的 `S / E` 规范，这两套都可以同时工作。
+
+### 三. 区块装饰与错误提示
+
+当区块高亮开启后，编辑器里会出现这些反馈：
+
+- 起始区块的圆点标识
+- 区块名称文本高亮
+- 概览标尺定位
+- 区块异常的错误高亮和悬停说明
+
+这部分的价值在于，你不是只能“折叠”，而是能在大文件里更快看见结构。
+
+### 四. 内置代码片段
+
+插件内置常用模板片段，包括：
+
+- `zcode`
+- `zcode-region`
+- `zcode-html`
+- `zcode-html-region`
+- `zcode-css`
+- `zcode-css-region`
+- `zcode-react-dom`
+- `zcode-react-dom-region`
+
+如果你更偏爱 snippet 工作流，这部分会比命令面板更快。
+
+## JSON / JavaScript 转 TypeScript
+
+这是插件的第二条核心能力。
+
+执行 `json转ts类型` 命令后，你可以：
+
+1. 选择生成 `type` 或 `interface`
+2. 粘贴 JSON 或 JavaScript 对象代码
+3. 自动解析并规范化输入内容
+4. 直接把结果插入当前编辑器
+
+支持的输入形式包括：
+
+- 标准 JSON
+- `const data = { ... }`
+- `let payload = { ... }`
+- `var result = { ... }`
+- `export default { ... }`
+
+它适合这些场景：
+
+- 根据接口样例快速补类型
+- 把 mock 数据转为正式类型声明
+- 整理临时对象结构
+- 在联调阶段快速完成字段建模
+
+## 如何开始使用
+
+安装并启用 z-code-tools 后，你可以通过下面几种方式进入主要能力：
+
+### 1. 使用命令面板
+
+当前常用命令包括：
+
+- `z-code-tools: 插入功能区块注释`
+- `z-code-tools: 打开设置页`
+- `z-code-tools: json转ts类型`
+
+### 2. 使用快捷键
+
+默认快捷键如下：
+
+| 快捷键 | 功能 |
+| --- | --- |
+| `Ctrl + Alt + Z` / `Cmd + Alt + Z` | 插入功能区块注释 |
+| `Ctrl + Alt + O` / `Cmd + Alt + O` | 打开设置页 |
+| `Ctrl + Alt + T` / `Cmd + Alt + T` | JSON 转 TS 类型 |
+
+### 3. 使用活动栏设置面板
+
+插件会在 VS Code 活动栏中注册独立入口。
+
+你可以在设置面板里：
+
+- 开关区块高亮
+- 开关区块圆点标识
+- 调整区块主题色
+- 控制激活时是否自动打开设置面板
+- 直接触发插入区块模板
+- 快速跳转到 VS Code 原生设置页
+
+## 适合哪些人使用
+
+z-code-tools 适合这些场景：
+
+- 经常维护大型 Vue / React 组件的人
+- 经常拆分 JavaScript / TypeScript 长文件的人
+- 希望团队统一代码区块风格的人
+- 经常根据接口样例补类型的人
+- 偏好键盘流、命令流和 snippet 工作流的人
+
+## 使用建议
+
+如果你是第一次安装，我建议这样试：
+
+1. 先用快捷键插入一个区块，感受结构整理的流程
+2. 再试一次 `#region` 风格和 `S / E` 风格的差别
+3. 打开活动栏设置页，调整一个你喜欢的主题色
+4. 最后再用一段接口返回样例试一下 JSON 转 TS
+
+z-code-tools 最适合的使用方式，不是一次记住所有功能，而是先把两三个高频动作变成默认习惯。
+
+## 联系与反馈
+
+如果你有功能建议、问题反馈，或者想一起继续打磨这款插件，欢迎联系我：
+
+- GitHub: [https://github.com/zeroanonx](https://github.com/zeroanonx)
+- 微信: [https://atomnotion.com/wechat](https://atomnotion.com/wechat)
+
+## 最后一句
+
+**z-code-tools，让大型文件的结构更清楚，让临时数据更快变成正式类型。**
