@@ -2,120 +2,254 @@
 
 import { useEffect, useRef } from "react";
 
-const r180 = Math.PI;
-const r90 = Math.PI / 2;
-const r15 = Math.PI / 12;
+const HALF_TURN = Math.PI;
+const QUARTER_TURN = Math.PI / 2;
+const BRANCH_ANGLE_OFFSET = Math.PI / 12;
+const BRANCH_COLOR = "#88888825";
+const BRANCH_LENGTH = 6;
+const FRAME_INTERVAL = 1000 / 40;
+const MIN_BRANCH_DEPTH = 30;
+const MOBILE_BREAKPOINT = 500;
+const OUT_OF_BOUNDS_OFFSET = 100;
+const MOBILE_TREE_COUNT = 2;
 
-export default function BackgroundTree() {
+type StepTask = () => void;
+
+interface BranchCounter {
+  value: number;
+}
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+/**
+ * @function 初始化 canvas 的显示尺寸和像素比，保证线条在高分屏下依然清晰。
+ */
+const initCanvas = (
+  canvas: HTMLCanvasElement,
+  width: number,
+  height: number
+): CanvasRenderingContext2D | null => {
+  const context = canvas.getContext("2d");
+
+  if (!context) {
+    return null;
+  }
+
+  const devicePixelRatio = window.devicePixelRatio || 1;
+
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+  canvas.width = devicePixelRatio * width;
+  canvas.height = devicePixelRatio * height;
+
+  context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  context.lineWidth = 1;
+  context.strokeStyle = BRANCH_COLOR;
+
+  return context;
+};
+
+/**
+ * @function 将极坐标位移转换为画布中的二维坐标。
+ */
+const polarToCartesian = (
+  x: number,
+  y: number,
+  radius: number,
+  angle: number
+): Point => {
+  return {
+    x: x + radius * Math.cos(angle),
+    y: y + radius * Math.sin(angle),
+  };
+};
+
+/**
+ * @function 判断当前分支节点是否已经完全离开可视区域。
+ */
+const isOutOfBounds = (point: Point): boolean => {
+  return (
+    point.x < -OUT_OF_BOUNDS_OFFSET ||
+    point.x > window.innerWidth + OUT_OF_BOUNDS_OFFSET ||
+    point.y < -OUT_OF_BOUNDS_OFFSET ||
+    point.y > window.innerHeight + OUT_OF_BOUNDS_OFFSET
+  );
+};
+
+/**
+ * @function 返回更偏向画面中段的随机比例，避免树枝都挤在边角。
+ */
+const getRandomMiddle = (): number => {
+  return Math.random() * 0.6 + 0.2;
+};
+
+/**
+ * @function 根据当前分支深度返回更自然的分叉概率。
+ */
+const getBranchRate = (depth: number): number => {
+  return depth <= MIN_BRANCH_DEPTH ? 0.8 : 0.5;
+};
+
+/**
+ * @function 根据屏幕宽度生成树状生长的起始任务。
+ */
+const createInitialSteps = (
+  width: number,
+  height: number,
+  drawBranch: (
+    x: number,
+    y: number,
+    angle: number,
+    counter?: BranchCounter
+  ) => void
+): StepTask[] => {
+  const steps: StepTask[] = [
+    () => drawBranch(getRandomMiddle() * width, -5, QUARTER_TURN),
+    () => drawBranch(getRandomMiddle() * width, height + 5, -QUARTER_TURN),
+    () => drawBranch(-5, getRandomMiddle() * height, 0),
+    () => drawBranch(width + 5, getRandomMiddle() * height, HALF_TURN),
+  ];
+
+  return width < MOBILE_BREAKPOINT ? steps.slice(0, MOBILE_TREE_COUNT) : steps;
+};
+
+/**
+ * @function 渲染树状背景，并在动画结束或组件卸载时正确清理资源。
+ */
+const TreeBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d")!;
-    const random = Math.random;
+    const canvas = canvasRef.current;
 
-    const resize = () => {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = "100vw";
-      canvas.style.height = "100vh";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    if (!canvas) {
+      return;
+    }
 
-    resize();
-    window.addEventListener("resize", resize);
+    let animationFrameId = 0;
+    let currentSteps: StepTask[] = [];
+    let nextSteps: StepTask[] = [];
+    let lastFrameTime = 0;
+    let context = initCanvas(canvas, window.innerWidth, window.innerHeight);
 
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(120,120,120,0.18)";
+    if (!context) {
+      return;
+    }
 
-    const MIN_BRANCH = 30;
-    const len = 6;
-
-    let steps: (() => void)[] = [];
-    let prevSteps: (() => void)[] = [];
-
-    const polar2cart = (x: number, y: number, r: number, t: number) => [
-      x + r * Math.cos(t),
-      y + r * Math.sin(t),
-    ];
-
-    const step = (
+    /**
+     * @function 递归绘制单条树枝，并把下一层分叉加入队列。
+     */
+    const drawBranch = (
       x: number,
       y: number,
-      rad: number,
-      counter = { value: 0 }
-    ) => {
-      const length = random() * len;
-      counter.value++;
-
-      const [nx, ny] = polar2cart(x, y, length, rad);
-
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(nx, ny);
-      ctx.stroke();
-
-      if (
-        nx < -100 ||
-        nx > window.innerWidth + 100 ||
-        ny < -100 ||
-        ny > window.innerHeight + 100
-      )
+      angle: number,
+      counter: BranchCounter = { value: 0 }
+    ): void => {
+      if (!context) {
         return;
+      }
 
-      const rate = counter.value <= MIN_BRANCH ? 0.8 : 0.5;
+      const length = Math.random() * BRANCH_LENGTH;
 
-      if (random() < rate)
-        steps.push(() => step(nx, ny, rad + random() * r15, counter));
-      if (random() < rate)
-        steps.push(() => step(nx, ny, rad - random() * r15, counter));
+      counter.value += 1;
+
+      const nextPoint = polarToCartesian(x, y, length, angle);
+
+      context.beginPath();
+      context.moveTo(x, y);
+      context.lineTo(nextPoint.x, nextPoint.y);
+      context.stroke();
+
+      if (isOutOfBounds(nextPoint)) {
+        return;
+      }
+
+      const branchRate = getBranchRate(counter.value);
+
+      if (Math.random() < branchRate) {
+        nextSteps.push(() =>
+          drawBranch(
+            nextPoint.x,
+            nextPoint.y,
+            angle + Math.random() * BRANCH_ANGLE_OFFSET,
+            counter
+          )
+        );
+      }
+
+      if (Math.random() < branchRate) {
+        nextSteps.push(() =>
+          drawBranch(
+            nextPoint.x,
+            nextPoint.y,
+            angle - Math.random() * BRANCH_ANGLE_OFFSET,
+            counter
+          )
+        );
+      }
     };
 
-    const frame = () => {
-      prevSteps = steps;
-      steps = [];
+    /**
+     * @function 按固定节奏推进树枝生长，避免每一帧都过度刷新。
+     */
+    const frame = (timestamp: number): void => {
+      if (timestamp - lastFrameTime < FRAME_INTERVAL) {
+        animationFrameId = window.requestAnimationFrame(frame);
+        return;
+      }
 
-      if (!prevSteps.length) return;
+      currentSteps = nextSteps;
+      nextSteps = [];
+      lastFrameTime = timestamp;
 
-      prevSteps.forEach((fn) => {
-        if (random() < 0.5) steps.push(fn);
-        else fn();
+      if (!currentSteps.length) {
+        return;
+      }
+
+      currentSteps.forEach((task) => {
+        if (Math.random() < 0.5) {
+          nextSteps.push(task);
+          return;
+        }
+
+        task();
       });
 
-      requestAnimationFrame(frame);
+      animationFrameId = window.requestAnimationFrame(frame);
     };
 
-    const randomMiddle = () => random() * 0.6 + 0.2;
+    /**
+     * @function 重新初始化整张画布，并从边缘重新开始生长。
+     */
+    const start = (): void => {
+      window.cancelAnimationFrame(animationFrameId);
+      context = initCanvas(canvas, window.innerWidth, window.innerHeight);
 
-    const start = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      prevSteps = [];
-      steps = [
-        () => step(randomMiddle() * window.innerWidth, -5, r90),
-        () =>
-          step(
-            randomMiddle() * window.innerWidth,
-            window.innerHeight + 5,
-            -r90
-          ),
-        () => step(-5, randomMiddle() * window.innerHeight, 0),
-        () =>
-          step(
-            window.innerWidth + 5,
-            randomMiddle() * window.innerHeight,
-            r180
-          ),
-      ];
+      if (!context) {
+        return;
+      }
 
-      if (window.innerWidth < 500) steps = steps.slice(0, 2);
-      frame();
+      context.lineWidth = 1;
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      currentSteps = [];
+      nextSteps = createInitialSteps(
+        window.innerWidth,
+        window.innerHeight,
+        drawBranch
+      );
+      lastFrameTime = performance.now();
+      animationFrameId = window.requestAnimationFrame(frame);
     };
 
     start();
+    window.addEventListener("resize", start);
 
     return () => {
-      window.removeEventListener("resize", resize);
+      window.cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", start);
     };
   }, []);
 
@@ -128,7 +262,9 @@ export default function BackgroundTree() {
         WebkitMaskImage: "radial-gradient(circle, black, transparent)",
       }}
     >
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} width="400" height="400" />
     </div>
   );
-}
+};
+
+export default TreeBackground;

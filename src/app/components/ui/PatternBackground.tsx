@@ -1,10 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useMemo } from "react";
 import { cva } from "class-variance-authority";
 import clsx from "clsx";
-
-/* -------------------------------- constants -------------------------------- */
 
 export const PATTERN_BACKGROUND_DIRECTION = {
   Top: "top",
@@ -34,7 +33,12 @@ export const PATTERN_BACKGROUND_SPEED = {
   Fast: 5000,
 } as const;
 
-/* -------------------------------- cva -------------------------------- */
+type PatternBackgroundDirection = keyof typeof PATTERN_BACKGROUND_DIRECTION;
+type PatternBackgroundVariant = keyof typeof PATTERN_BACKGROUND_VARIANT;
+type PatternBackgroundMask = keyof typeof PATTERN_BACKGROUND_MASK;
+type PatternBackgroundSize = "xs" | "sm" | "md" | "lg";
+
+const ANIMATION_STYLE_ID = "pattern-background-animations";
 
 const patternBackgroundVariants = cva(
   "fixed inset-0 pointer-events-none z-1 overflow-hidden",
@@ -66,58 +70,32 @@ const patternBackgroundVariants = cva(
   }
 );
 
-/* -------------------------------- props -------------------------------- */
-
 export interface PatternBackgroundProps {
-  variant?: keyof typeof PATTERN_BACKGROUND_VARIANT;
-  size?: "xs" | "sm" | "md" | "lg";
-  mask?: keyof typeof PATTERN_BACKGROUND_MASK;
   animate?: boolean;
-  direction?: keyof typeof PATTERN_BACKGROUND_DIRECTION;
-  speed?: number;
-  className?: string;
   children?: ReactNode;
+  className?: string;
+  direction?: PatternBackgroundDirection;
+  mask?: PatternBackgroundMask;
+  size?: PatternBackgroundSize;
+  speed?: number;
+  variant?: PatternBackgroundVariant;
 }
 
-/* -------------------------------- component -------------------------------- */
+/**
+ * @function 在客户端挂载时注入一次背景动画样式，避免模块顶层直接操作 document。
+ */
+const ensureAnimationStyles = (): void => {
+  if (
+    typeof document === "undefined" ||
+    document.getElementById(ANIMATION_STYLE_ID)
+  ) {
+    return;
+  }
 
-export default function PatternBackground({
-  variant = "Grid",
-  size = "md",
-  mask = "Ellipse",
-  animate = false,
-  direction = "Top",
-  speed = PATTERN_BACKGROUND_SPEED.Default,
-  className,
-  children,
-}: PatternBackgroundProps) {
-  return (
-    <div
-      className={clsx(
-        patternBackgroundVariants({
-          variant: PATTERN_BACKGROUND_VARIANT[variant],
-          size,
-          mask: PATTERN_BACKGROUND_MASK[mask],
-        }),
-        "text-neutral-300 dark:text-neutral-700",
-        animate && `move move-${PATTERN_BACKGROUND_DIRECTION[direction]}`,
-        className
-      )}
-      style={{ animationDuration: `${speed}ms` }}
-    >
-      {children}
-    </div>
-  );
-}
+  const style = document.createElement("style");
 
-/* -------------------------------- animations -------------------------------- */
-
-if (typeof document !== "undefined") {
-  const id = "pattern-background-animations";
-  if (!document.getElementById(id)) {
-    const style = document.createElement("style");
-    style.id = id;
-    style.innerHTML = `
+  style.id = ANIMATION_STYLE_ID;
+  style.innerHTML = `
 @keyframes to-top { from { background-position: 0 100%; } to { background-position: 0 0; } }
 @keyframes to-bottom { from { background-position: 0 0; } to { background-position: 0 100%; } }
 @keyframes to-left { from { background-position: 100% 0; } to { background-position: 0 0; } }
@@ -140,6 +118,72 @@ if (typeof document !== "undefined") {
 .move-bottom-left { animation-name: to-bottom-left; }
 .move-bottom-right { animation-name: to-bottom-right; }
 `;
-    document.head.appendChild(style);
+
+  document.head.appendChild(style);
+};
+
+/**
+ * @function 生成当前背景所需的动画类名。
+ */
+const getAnimationClassName = (
+  animate: boolean,
+  direction: PatternBackgroundDirection
+): string | null => {
+  if (!animate) {
+    return null;
   }
-}
+
+  return `move move-${PATTERN_BACKGROUND_DIRECTION[direction]}`;
+};
+
+/**
+ * @function 渲染可复用的网格 / 圆点背景，并按需附加平移动画。
+ */
+const PatternBackground = ({
+  animate = false,
+  children,
+  className,
+  direction = "Top",
+  mask = "Ellipse",
+  size = "md",
+  speed = PATTERN_BACKGROUND_SPEED.Default,
+  variant = "Grid",
+}: PatternBackgroundProps) => {
+  useEffect(() => {
+    ensureAnimationStyles();
+  }, []);
+
+  const animationClassName = useMemo(() => {
+    return getAnimationClassName(animate, direction);
+  }, [animate, direction]);
+
+  const animationStyle = useMemo<CSSProperties | undefined>(() => {
+    if (!animate) {
+      return undefined;
+    }
+
+    return {
+      animationDuration: `${speed}ms`,
+    };
+  }, [animate, speed]);
+
+  return (
+    <div
+      className={clsx(
+        patternBackgroundVariants({
+          mask: PATTERN_BACKGROUND_MASK[mask],
+          size,
+          variant: PATTERN_BACKGROUND_VARIANT[variant],
+        }),
+        "text-neutral-300 dark:text-neutral-700",
+        animationClassName,
+        className
+      )}
+      style={animationStyle}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default PatternBackground;
