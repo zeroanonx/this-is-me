@@ -24,17 +24,6 @@ const SURFACE_SUBCARD_CLASS =
 const SURFACE_BUTTON_CLASS =
   "mt-4 inline-flex items-center gap-2 rounded-full border border-white/8 px-3.5 py-1.5 text-[11px] shadow-[0_18px_70px_rgba(0,0,0,0.24)] transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/6";
 
-const HOME_ABOUT_PARAGRAPHS = [
-  "你好，我是 ZeroAnon，一个狂热的开源爱好者。",
-  "我很喜欢把脑海里的想法一点点做出来，这也是我持续写代码的动力来源。",
-  "我很喜欢音乐，音乐是我永恒的伴侣。",
-  "我像一条缝里挤出的野草，弯弯曲曲地向上生长。",
-  "我维护着一个开源工具集 atom-tools，如果你愿意，也欢迎来提建议或者一起参与。",
-  "目前我在杭州参与一些有意思的项目，也一直在持续打磨自己的能力边界。",
-  "我也很喜欢分享知识和经验。",
-  "如果你也对这些方向感兴趣，我们可以一起喝杯咖啡，或者顺手做点有趣的东西。",
-] as const;
-
 /**
  * @function 格式化首页统计数字，超过一万时用更适合中文阅读的缩写展示。
  */
@@ -98,38 +87,36 @@ export default function Index() {
             <article className={SURFACE_CARD_CLASS}>
               <p className="text-xs uppercase tracking-[0.36em]">About</p>
               <div className="mt-3 space-y-2.5 text-[12.5px] leading-6">
-                {HOME_ABOUT_PARAGRAPHS.map((paragraph, index) => (
-                  <p key={paragraph}>
-                    {index === 0 ? (
-                      <>
-                        你好，我是{" "}
-                        <span className="text-(--accent-mint)">ZeroAnon</span>
-                        ，一个狂热的开源爱好者。
-                      </>
-                    ) : index === 4 ? (
-                      <>
-                        我维护着一个开源工具集{" "}
-                        <a
-                          href="https://t.zeroanon.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-white/20 underline-offset-4 transition"
-                        >
-                          atom-tools
-                        </a>
-                        ，如果你愿意，也欢迎来提建议或者一起参与。
-                      </>
-                    ) : index === 5 ? (
-                      <>
-                        目前我在
-                        <span className="text-(--accent-primary)"> 杭州 </span>
-                        参与一些有意思的项目，也一直在持续打磨自己的能力边界。
-                      </>
-                    ) : (
-                      paragraph
-                    )}
-                  </p>
-                ))}
+                <p>
+                  你好，我是{" "}
+                  <span className="text-(--accent-mint)">ZeroAnon</span>
+                  ，一个狂热的开源爱好者。
+                </p>
+                <p>
+                  我很喜欢把脑海里的想法一点点做出来，这也是我持续写代码的动力来源。
+                </p>
+                <p>我很喜欢音乐，音乐是我永恒的伴侣。</p>
+                <p>我像一条缝里挤出的野草，弯弯曲曲地向上生长。</p>
+                <p>
+                  这里是我开发和维护的一些
+                  <a
+                    href="/projects"
+                    rel="noopener noreferrer"
+                    className="underline decoration-white/20 underline-offset-4 transition"
+                  >
+                    <span className="text-(--accent-primary)"> 项目 </span>
+                  </a>
+                  ，如果你愿意，也欢迎来提建议或者一起参与。
+                </p>
+                <p>
+                  目前我在
+                  <span className="text-(--accent-primary)"> 杭州 </span>
+                  参与一些有意思的项目，也一直在持续打磨自己的能力边界。
+                </p>
+                <p>我也很喜欢分享知识和经验。</p>
+                <p>
+                  如果你也对这些方向感兴趣，我们可以一起喝杯咖啡，或者顺手做点有趣的东西。
+                </p>
               </div>
 
               <div className={SURFACE_SUBCARD_CLASS}>
@@ -174,7 +161,7 @@ export default function Index() {
               <div className={SURFACE_SUBCARD_CLASS}>
                 <p className="text-xs uppercase tracking-[0.3em]">当前关注</p>
                 <p className="mt-2.5 text-[12.5px] leading-6">
-                  这段时间我更关注知识分享、开源工具打磨，以及那些看起来克制、用起来顺手的界面体验。
+                  我更关注知识分享、开源工具打磨，以及那些看起来克制、用起来顺手的界面体验。
                 </p>
               </div>
             </article>
