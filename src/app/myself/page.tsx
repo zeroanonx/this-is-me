@@ -47,6 +47,7 @@ export default function MyselfPage() {
     <Container size="default">
       <main className="prose mx-auto">
         <PostHeader
+          eyebrow="Notebook"
           title="Myself"
           desc="一些我自己的东西..."
           font="lh"

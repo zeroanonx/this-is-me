@@ -17,6 +17,7 @@ export default function ProjectsContainer({ content }: Props) {
   return (
     <section className="w-full">
       <PostHeader
+        eyebrow="Works"
         title={title}
         desc={description}
         font="lh"

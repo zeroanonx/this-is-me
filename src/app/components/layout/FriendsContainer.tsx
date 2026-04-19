@@ -31,6 +31,7 @@ export default function FriendsContainer({ content }: Props) {
   return (
     <section className="w-full">
       <PostHeader
+        eyebrow="Friends"
         title={title}
         desc={description}
         font="lh"
