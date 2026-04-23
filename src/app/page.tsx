@@ -114,14 +114,14 @@ export default function Index() {
                   参与一些有意思的项目，也一直在持续打磨自己的能力边界。
                 </p>
                 <p>
-                  我也很喜欢分享知识和经验。这是我的{" "}
+                  我也很喜欢分享知识和经验，这是我的{" "}
                   <a
                     href="/myself/use-setting"
                     rel="noopener noreferrer"
                     className="underline decoration-white/20 underline-offset-4 transition"
                   >
                     <span className="text-(--accent-primary)">
-                      工作环境清单
+                      工作环境清单。
                     </span>
                   </a>
                 </p>
