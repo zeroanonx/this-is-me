@@ -116,7 +116,7 @@ export default function Index() {
                 <p>
                   我也很喜欢分享知识和经验。这是我的{" "}
                   <a
-                    href="/others/use-setting"
+                    href="/myself/use-setting"
                     rel="noopener noreferrer"
                     className="underline decoration-white/20 underline-offset-4 transition"
                   >

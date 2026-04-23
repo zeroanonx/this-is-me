@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import Container from "@/app/components/layout/Container";
 import SpecBadge from "@/app/components/ui/SpecBadge";
