@@ -113,7 +113,18 @@ export default function Index() {
                   <span className="text-(--accent-primary)"> 杭州 </span>
                   参与一些有意思的项目，也一直在持续打磨自己的能力边界。
                 </p>
-                <p>我也很喜欢分享知识和经验。</p>
+                <p>
+                  我也很喜欢分享知识和经验。这是我的{" "}
+                  <a
+                    href="/others/use-setting"
+                    rel="noopener noreferrer"
+                    className="underline decoration-white/20 underline-offset-4 transition"
+                  >
+                    <span className="text-(--accent-primary)">
+                      工作环境清单
+                    </span>
+                  </a>
+                </p>
                 <p>
                   如果你也对这些方向感兴趣，我们可以一起喝杯咖啡，或者顺手做点有趣的东西。
                 </p>
