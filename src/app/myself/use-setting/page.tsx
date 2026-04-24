@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import Container from "@/app/components/layout/Container";
-import SpecBadge from "@/app/components/ui/SpecBadge";
+import ZeroLink from "@/app/components/ui/ZeroLink";
 
 export const metadata: Metadata = {
   title: "Uses | ZeroAnon",
@@ -40,7 +40,7 @@ const spec = (label: string): SpecItem => ({ label, variant: "spec" });
 const USES_SECTIONS: readonly UsesSection[] = [
   {
     title: "Editor",
-    accent: "var(--accent-primary)",
+    accent: "--accent-primary",
     items: [
       {
         content: [
@@ -70,7 +70,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
   {
     title: "Terminal",
-    accent: "var(--accent-mint)",
+    accent: "--accent-pink",
     items: [
       {
         content: ["常用终端环境是 ", spec("zsh"), "。"],
@@ -86,7 +86,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
   {
     title: "Desktop Apps",
-    accent: "var(--accent-sky)",
+    accent: "--accent-sky",
     items: [
       {
         content: [
@@ -120,7 +120,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
   {
     title: "Development",
-    accent: "var(--accent-warm)",
+    accent: "--accent-warm",
     items: [
       {
         content: [
@@ -151,7 +151,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
   {
     title: "Desk Setup",
-    accent: "var(--accent-coral)",
+    accent: "--accent-coral",
     items: [
       {
         content: ["Workstation"],
@@ -226,7 +226,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
   {
     title: "Keyboards",
-    accent: "var(--accent-lilac)",
+    accent: "--accent-lilac",
     items: [
       {
         content: ["Keyboard"],
@@ -257,10 +257,13 @@ const USES_SECTIONS: readonly UsesSection[] = [
   },
 ] as const;
 
-const PAGE_LINK_CLASS =
-  "font-medium text-[var(--accent-primary)] underline decoration-[color-mix(in_srgb,var(--accent-primary)_34%,transparent)] underline-offset-4 transition hover:decoration-[color-mix(in_srgb,var(--accent-primary)_82%,transparent)]";
-
-const InlineContent = ({ parts }: { parts: readonly TextPart[] }) => {
+const InlineContent = ({
+  parts,
+  accent,
+}: {
+  parts: readonly TextPart[];
+  accent: string;
+}) => {
   return (
     <>
       {parts.map((part, index) => {
@@ -270,20 +273,21 @@ const InlineContent = ({ parts }: { parts: readonly TextPart[] }) => {
 
         if ("variant" in part) {
           return (
-            <SpecBadge key={`${part.label}-${index}`}>{part.label}</SpecBadge>
+            <ZeroLink key={`${part.label}-${index}`} theme={accent}>
+              {part.label}
+            </ZeroLink>
           );
         }
 
         return (
-          <a
+          <ZeroLink
             key={`${part.href}-${index}`}
             href={part.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={PAGE_LINK_CLASS}
+            blank
+            theme={accent}
           >
             {part.label}
-          </a>
+          </ZeroLink>
         );
       })}
     </>
@@ -293,9 +297,11 @@ const InlineContent = ({ parts }: { parts: readonly TextPart[] }) => {
 const UsesList = ({
   items,
   nested = false,
+  accent,
 }: {
   items: readonly UsesItem[];
   nested?: boolean;
+  accent: string;
 }) => {
   return (
     <ul
@@ -307,8 +313,10 @@ const UsesList = ({
     >
       {items.map((item, index) => (
         <li key={index} className={nested ? "list-none" : ""}>
-          <InlineContent parts={item.content} />
-          {item.children ? <UsesList items={item.children} nested /> : null}
+          <InlineContent parts={item.content} accent={accent} />
+          {item.children ? (
+            <UsesList items={item.children} nested accent={accent} />
+          ) : null}
         </li>
       ))}
     </ul>
@@ -330,7 +338,7 @@ const UsesSectionBlock = ({ section }: { section: UsesSection }) => {
           {section.title}
         </h2>
       </div>
-      <UsesList items={section.items} />
+      <UsesList items={section.items} accent={section.accent} />
     </section>
   );
 };

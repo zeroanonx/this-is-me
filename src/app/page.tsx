@@ -6,6 +6,7 @@ import AIEntry from "@/app/components/ai/AIEntry";
 import HomeHero from "@/app/components/layout/HomeHero";
 import { FEATURED_SKILLS } from "@/app/constants/modules/home";
 import { getAllPosts } from "@/app/utils/modules/generateRoutes";
+import ZeroLink from "./components/ui/ZeroLink";
 
 export const metadata: Metadata = {
   title: "ZeroAnon | 个人网站",
@@ -103,13 +104,13 @@ export default function Index() {
                 <p>我像一条缝里挤出的野草，弯弯曲曲地向上生长。</p>
                 <p>
                   这里是我开发和维护的一些
-                  <a
+                  <ZeroLink
+                    key="/projects"
                     href="/projects"
-                    rel="noopener noreferrer"
-                    className="underline decoration-white/20 underline-offset-4 transition"
+                    theme="--accent-pink"
                   >
-                    <span className="text-(--accent-primary)"> 项目 </span>
-                  </a>
+                    项目
+                  </ZeroLink>
                   ，如果你愿意，也欢迎来提建议或者一起参与。
                 </p>
                 <p>
@@ -119,15 +120,13 @@ export default function Index() {
                 </p>
                 <p>
                   我也很喜欢分享知识和经验，这是我的{" "}
-                  <a
+                  <ZeroLink
+                    key="/myself/use-setting"
                     href="/myself/use-setting"
-                    rel="noopener noreferrer"
-                    className="underline decoration-white/20 underline-offset-4 transition"
+                    theme="--accent-lilac"
                   >
-                    <span className="text-(--accent-primary)">
-                      工作环境清单。
-                    </span>
-                  </a>
+                    工作环境清单。
+                  </ZeroLink>
                 </p>
                 <p>
                   如果你也对这些方向感兴趣，我们可以一起喝杯咖啡，或者顺手做点有趣的东西。

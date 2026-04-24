@@ -6,6 +6,7 @@ import { slugify } from "@/app/utils";
 import { CodeGroup } from "./modules/CodeGroup";
 import { CodeSlot } from "./modules/CodeSlot";
 import ImagePreview from "../ui/ImagePreview";
+import ZeroLink from "../ui/ZeroLink";
 
 type MDXComponents = ComponentProps<typeof MDXRemote>["components"];
 export type CodeItemProps = {
