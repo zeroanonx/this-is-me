@@ -93,7 +93,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ stats }) => {
         <div className="relative h-16 w-16 overflow-hidden rounded-full border border-white/10 p-1 shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_20px_80px_rgba(0,0,0,0.35)] transition duration-300 group-hover:-translate-y-0.5 group-hover:border-white/20 group-hover:shadow-[0_0_0_1px_color-mix(in_srgb,var(--accent-primary)_12%,rgba(255,255,255,0.04)),0_24px_80px_rgba(0,0,0,0.4)]">
           <img
             alt="LinHan avatar"
-            src="https://avatars.githubusercontent.com/u/119206123?v=4&size=256"
+            src="/assets/images/me/avatar.jpeg"
             className="h-full w-full rounded-full object-cover transition duration-300 group-hover:scale-[1.03]"
           />
         </div>
