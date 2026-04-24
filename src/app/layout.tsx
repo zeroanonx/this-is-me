@@ -85,14 +85,12 @@ export default function RootLayout({
       >
         <SlideEnterController />
         <Background />
-        <main>
+        <main className="page-shell flex flex-col">
           <Header />
-          <div className="min-h-screen w-screen overflow-x-hidden">
-            {children}
-          </div>
+          <div className="page-container">{children}</div>
           <Footer />
-          <TargetCursor />
         </main>
+        <TargetCursor />
         <Analytics />
       </body>
     </html>

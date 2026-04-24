@@ -34,7 +34,24 @@ html.dark {
 html {
   background-color: var(--c-bg);
   overflow-x: hidden;
+  height: 100vh;
+  width: 100vw;
   overflow-y: scroll;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.page-shell {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.page-container {
+  flex: 1 0 auto;
+  min-height: 0;
 }
 
 html.dark {

@@ -6,7 +6,7 @@ import Container from "@/app/components/layout/Container";
 export default function Footer() {
   return (
     <Container size="wide">
-      <footer className="flex items-center justify-center mt-10 px-4">
+      <footer className="flex items-center justify-center mt-10 px-4 ">
         <div className="w-full max-w-5xl black border-t border-zinc-100 px-0 py-4 dark:border-zinc-800 items-center justify-center md:flex md:justify-between">
           <a
             href="https://github.com/zeroanonx"
