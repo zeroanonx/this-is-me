@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Container from "@/app/components/layout/Container";
 import ZeroLink from "@/app/components/ui/ZeroLink";
+import PageBackLink from "@/app/components/layout/PageBackLink";
 
 export const metadata: Metadata = {
   title: "Uses | ZeroAnon",
@@ -349,7 +350,8 @@ const UseSettingPage = () => {
       <main className="relative z-10 py-10 sm:py-14">
         <article className="mx-auto max-w-[68ch] px-1 py-2 sm:px-0">
           <header className="mb-12">
-            <h1 className="text-[34px] font-semibold leading-tight tracking-[-0.04em] sm:text-[48px] ">
+            <PageBackLink />
+            <h1 className=" sm:text-3xl! text-2xl!  font-semibold leading-tight tracking-[-0.04em]">
               Here are the tools I use to build things
             </h1>
             <p className="mt-5 text-[15px] leading-8 font-[lh]">

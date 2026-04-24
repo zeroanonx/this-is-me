@@ -2,6 +2,7 @@ import PostBody from "@/app/components/layout/PostBody";
 import MoveTop from "@/app/components/ui/MoveTop";
 import Container from "@/app/components/layout/Container";
 import { Params, useGeneratePage } from "@/app/hooks/modules/useGeneratePage";
+import PageBackLink from "@/app/components/layout/PageBackLink";
 
 // 强制在 build 时生成 HTML
 export const dynamic = "force-static";
@@ -22,6 +23,7 @@ export default async function Post(props: Params) {
   return (
     <Container size="default">
       <section className="prose mx-auto">
+        <PageBackLink />
         <h1 className="sm:text-3xl! text-2xl!">{post.title}</h1>
         <p>
           <span>{post.date}</span>

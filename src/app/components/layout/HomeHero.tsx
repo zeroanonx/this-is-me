@@ -84,7 +84,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ stats }) => {
     <>
       <div className="group relative mx-auto h-16 w-16">
         <div
-          className="absolute inset-[-10px] rounded-full opacity-0 blur-xl transition duration-300 group-hover:opacity-100"
+          className="absolute -inset-2.5 rounded-full opacity-0 blur-xl transition duration-300 group-hover:opacity-100"
           style={{
             background:
               "radial-gradient(circle, color-mix(in srgb, var(--accent-primary) 18%, transparent) 0%, transparent 72%)",
