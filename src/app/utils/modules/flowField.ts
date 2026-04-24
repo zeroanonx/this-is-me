@@ -1,4 +1,6 @@
-// 伪随机（固定 seed，刷新不变）
+/**
+ * @function 伪随机（固定 seed，刷新不变）
+ */
 function mulberry32(seed: number) {
   return function () {
     let t = (seed += 0x6d2b79f5);
@@ -8,13 +10,16 @@ function mulberry32(seed: number) {
   };
 }
 
-export function generateFlowPaths({
+/**
+ * 生成流动路径
+ */
+export const generateFlowPaths = ({
   width = 1000,
   height = 1000,
   lines = 80,
   steps = 200,
   seed = 13,
-}) {
+}) => {
   const rand = mulberry32(seed);
   const paths: string[] = [];
 
@@ -42,4 +47,4 @@ export function generateFlowPaths({
   }
 
   return paths;
-}
+};

@@ -58,7 +58,7 @@ export function getPostBySlug(slug: string) {
   const realSlug = slug.replace(/\.(md|mdx)$/, "");
   const exts = [".md", ".mdx"];
 
-  // 1. 先按原路径找
+  // 先按原路径找
   for (const ext of exts) {
     const candidate = join(postsDirectory, `${realSlug}${ext}`);
 
@@ -79,7 +79,7 @@ export function getPostBySlug(slug: string) {
     }
   }
 
-  // 2. 动态回退：只要存在顶级目录，就试一次 {topDir}/index
+  // 动态回退：只要存在顶级目录，就试一次 {topDir}/index
   const topDir = slug.split("/")[0];
   const fallback = join(postsDirectory, topDir, "index.mdx");
   if (fs.existsSync(fallback)) {
@@ -87,7 +87,7 @@ export function getPostBySlug(slug: string) {
     return { ...data, slug: `${topDir}/index`, content } as Post;
   }
 
-  // 3. 最终兜底
+  //  最终兜底
   return notFound();
 }
 

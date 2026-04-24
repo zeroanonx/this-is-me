@@ -1,7 +1,4 @@
-import { getAllPosts } from "@/app/utils/modules/generateRoutes";
-import { Post } from "../types";
 import BlogContainer from "@/app/components/layout/BlogContainer";
-import dayjs from "dayjs";
 import Container from "@/app/components/layout/Container";
 import PostHeader from "@/app/components/ui/PostHeader";
 import { useGetBlogListByYear } from "../hooks/modules/useGetBlogListByYear";

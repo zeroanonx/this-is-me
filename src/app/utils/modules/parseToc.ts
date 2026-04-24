@@ -4,6 +4,9 @@ export type TocItem = {
   level: number;
 };
 
+/**
+ * @function 从 Markdown 内容中解析目录（TOC）
+ */
 export const parseMarkdownToc = (content: string): TocItem[] => {
   const lines = content.split("\n");
 
