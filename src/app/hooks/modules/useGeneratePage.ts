@@ -3,6 +3,7 @@ import { join } from "path";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { MATE_TITLE } from "@/app/constants";
+import { GeneratePageOption } from "@/app/types";
 
 /**
  * @type 路由参数类型定义，约定 `[...slug]` 为多段路径（支持子目录）
@@ -11,13 +12,6 @@ export type Params = {
   params: Promise<{
     slug?: string[] | string;
   }>;
-};
-
-/**
- * @type 生成页面元数据类型定义
- */
-type GeneratePageOption = {
-  dirName: string; // 文章目录名称，如 "blog"、"others"、"myself"
 };
 
 /**

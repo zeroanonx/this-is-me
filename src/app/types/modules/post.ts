@@ -65,3 +65,10 @@ export type ProjectsType = ListType<ProjectsListItem>;
  * @type 友链
  */
 export type FriendsType = ListType<FriendsListItem>;
+
+/**
+ * @type 生成页面元数据类型定义
+ */
+export interface GeneratePageOption {
+  dirName: string; // 文章目录名称，如 "blog"、"others"、"myself"
+}

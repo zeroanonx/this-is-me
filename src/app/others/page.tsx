@@ -3,6 +3,7 @@ import { Post } from "../types";
 import BlogContainer from "@/app/components/layout/BlogContainer";
 import dayjs from "dayjs";
 import Container from "@/app/components/layout/Container";
+import { useGetBlogListByYear } from "../hooks/modules/useGetBlogListByYear";
 
 //  强制在 build 时生成 HTML
 export const dynamic = "force-static";
@@ -13,34 +14,7 @@ export const dynamicParams = false;
 const dirName = "others";
 
 export default function OthersPage() {
-  // 获取所有文章
-  const posts = getAllPosts(dirName);
-
-  // 按 type 分组
-  const groupedPosts = posts.reduce<Record<string, Post[]>>((acc, post) => {
-    const type = post.type;
-    (acc[type] ??= []).push(post);
-    return acc;
-  }, {});
-
-  // 按【年份】分组
-  const list = Object.entries(groupedPosts).map(([type, posts]) => {
-    // 年份字典
-    const byYear = posts.reduce<Record<string, Post[]>>((acc, post) => {
-      const year = dayjs(post.date).format("YYYY");
-      (acc[year] ??= []).push({
-        ...post,
-      });
-      return acc;
-    }, {});
-
-    // 按年份倒序排列
-    const yearList = Object.entries(byYear)
-      .sort(([a], [b]) => b.localeCompare(a)) // 2023 > 2022
-      .map(([year, yearPosts]) => ({ year, posts: yearPosts }));
-
-    return { type, list: yearList };
-  });
+  const { list } = useGetBlogListByYear({ dirName });
 
   return (
     <Container size="default">
