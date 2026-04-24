@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Icon } from "@iconify-icon/react";
 import {
   ALL_SKILLS,
   SKILL_CATEGORIES,
   type SkillItem,
 } from "@/app/constants/modules/home";
+import PageBackLink from "../components/layout/PageBackLink";
 
 export const metadata: Metadata = {
   title: "Skills | ZeroAnon",
@@ -63,10 +63,7 @@ export default function SkillsPage() {
             </p>
           </div>
 
-          <Link href="/" className={SURFACE_BUTTON_CLASS}>
-            <Icon icon="solar:arrow-left-linear" className="text-sm" />
-            返回首页
-          </Link>
+          <PageBackLink />
         </div>
 
         <div className="mt-9 space-y-5">
