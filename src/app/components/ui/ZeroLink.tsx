@@ -1,11 +1,16 @@
 interface ZeroLinkProps {
   children: React.ReactNode;
-  theme: string;
+  theme?: string;
   href?: string;
   blank?: boolean;
 }
 
-const ZeroLink = ({ children, theme, href, blank = false }: ZeroLinkProps) => {
+const ZeroLink = ({
+  children,
+  theme = "--accent-primary",
+  href,
+  blank = false,
+}: ZeroLinkProps) => {
   const commonStyle = {
     color: `var(${theme})`,
     "--spec-badge-line": `color-mix(in srgb, var(${theme}) 42%, transparent)`,

@@ -11,11 +11,11 @@
   margin-top: 1.2em;
   margin-bottom: 1.2em;
 }
-.prose a {
+/* .prose a {
   color: var(--fg-deeper);
   text-decoration: none;
   font-weight: 500;
-}
+} */
 .prose strong {
   color: var(--fg-deep);
   font-weight: 600;
