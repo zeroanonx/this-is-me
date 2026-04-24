@@ -8,8 +8,12 @@ import {
 } from "@/app/constants/modules/home";
 
 export const metadata: Metadata = {
-  title: "技能 | Blog - ZeroAnon",
-  description: "ZeroAnon 的完整技能页。",
+  title: "Skills | ZeroAnon",
+  description:
+    "ZeroAnon 的完整技能页，整理日常开发中最常用的一组技术栈与工具能力。",
+  alternates: {
+    canonical: "/skills",
+  },
 };
 
 const SURFACE_CARD_CLASS =

@@ -1,4 +1,4 @@
-import { MATE_TITLE, MATE_TITLE_IMG } from "@/app/constants";
+import { MATE_TITLE, MATE_TITLE_IMG, SITE_URL } from "@/app/constants";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import cn from "classnames";
@@ -26,7 +26,23 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: `${MATE_TITLE}`,
   description: `ZeroAnon's personal website`,
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": `${SITE_URL}/rss.xml`,
+    },
+  },
   openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "ZeroAnon",
+    images: [MATE_TITLE_IMG],
+  },
+  twitter: {
+    card: "summary",
+    title: "ZeroAnon",
+    description: "ZeroAnon 的个人网站，记录项目、文章、灵感和日常积累。",
     images: [MATE_TITLE_IMG],
   },
 };
@@ -77,7 +93,7 @@ export default function RootLayout({
         />
         <meta name="theme-color" content="#000" />
         {/* 博客 RSS 订阅地址 */}
-        <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
+        <link rel="alternate" type="application/rss+xml" href="/rss.xml" />
       </head>
 
       <body

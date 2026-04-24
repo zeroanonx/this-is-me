@@ -8,8 +8,12 @@ import { FEATURED_SKILLS } from "@/app/constants/modules/home";
 import { getAllPosts } from "@/app/utils/modules/generateRoutes";
 
 export const metadata: Metadata = {
-  title: "Blog - ZeroAnon",
-  description: "ZeroAnon 的个人网站。",
+  title: "ZeroAnon | 个人网站",
+  description:
+    "ZeroAnon 的个人网站，记录项目、文章、技能、灵感收藏与个人随笔。",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 interface StatItem {

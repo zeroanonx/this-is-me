@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
+
 import BlogContainer from "@/app/components/layout/BlogContainer";
 import Container from "@/app/components/layout/Container";
 import PostHeader from "@/app/components/ui/PostHeader";
 import { useGetBlogListByYear } from "../hooks/modules/useGetBlogListByYear";
+
+export const metadata: Metadata = {
+  title: "Blog | ZeroAnon",
+  description:
+    "ZeroAnon 的博客文章归档，记录开发实践、设计想法和持续生长中的经验。",
+  alternates: {
+    canonical: "/blog",
+  },
+};
 
 //  强制在 build 时生成 HTML
 export const dynamic = "force-static";

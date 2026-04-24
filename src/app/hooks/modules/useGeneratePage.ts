@@ -2,7 +2,7 @@ import { getAllPosts, getPostBySlug } from "@/app/utils/modules/generateRoutes";
 import { join } from "path";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { MATE_TITLE } from "@/app/constants";
+import { MATE_TITLE, MATE_TITLE_IMG, SITE_URL } from "@/app/constants";
 import { GeneratePageOption } from "@/app/types";
 
 /**
@@ -19,6 +19,28 @@ export type Params = {
  */
 export const useGeneratePage = (option: GeneratePageOption) => {
   const { dirName } = option;
+
+  /**
+   * @function 提取适合写入 metadata 的简短摘要，避免把整篇正文塞进 description。
+   */
+  const buildDescription = (content: string) => {
+    const normalized = content
+      .replace(/```[\s\S]*?```/g, " ")
+      .replace(/`[^`]*`/g, " ")
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+      .replace(/\[[^\]]*\]\([^)]*\)/g, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/^#{1,6}\s+/gm, "")
+      .replace(/^>\s?/gm, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (normalized.length <= 140) {
+      return normalized;
+    }
+
+    return `${normalized.slice(0, 140).trim()}...`;
+  };
 
   /**
    * @function 获取文章路径
@@ -46,13 +68,31 @@ export const useGeneratePage = (option: GeneratePageOption) => {
    */
   const generateMetadata = async (props: Params): Promise<Metadata> => {
     const post = await getSlug(props);
-
+    const postPath = `/${post.slug.replace(/\/index$/, "")}`;
     const title = `${post.title} | ${MATE_TITLE}`;
+    const description = buildDescription(post.content);
+    const url = `${SITE_URL}${postPath}`;
 
     return {
       title,
+      description,
+      alternates: {
+        canonical: postPath,
+      },
       openGraph: {
         title,
+        description,
+        url,
+        type: "article",
+        publishedTime: new Date(post.date).toISOString(),
+        authors: ["ZeroAnon"],
+        images: [MATE_TITLE_IMG],
+      },
+      twitter: {
+        card: "summary",
+        title,
+        description,
+        images: [MATE_TITLE_IMG],
       },
     };
   };

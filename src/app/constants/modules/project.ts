@@ -9,3 +9,5 @@ export const PROJECT_STORAGE_KEY = "ITS_ME";
 export const MATE_TITLE = "Blog - ZeroAnon";
 export const MATE_TITLE_IMG =
   "https://avatars.githubusercontent.com/u/119206123?v=4&size=64";
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_BASE_URL || "https://zeroanon.com";

@@ -6,6 +6,9 @@ import SpecBadge from "@/app/components/ui/SpecBadge";
 export const metadata: Metadata = {
   title: "Uses | ZeroAnon",
   description: "ZeroAnon 当前正在使用的设备、软件与工作环境。",
+  alternates: {
+    canonical: "/myself/use-setting",
+  },
 };
 
 type LinkItem = {

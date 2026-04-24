@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
+
 import BlogContainer from "@/app/components/layout/BlogContainer";
 import Container from "@/app/components/layout/Container";
 import PostHeader from "@/app/components/ui/PostHeader";
 import { useGetBlogListByYear } from "../hooks/modules/useGetBlogListByYear";
+
+export const metadata: Metadata = {
+  title: "Myself | ZeroAnon",
+  description:
+    "ZeroAnon 的个人随笔与自我记录页面，收纳一些更私人的想法和文字。",
+  alternates: {
+    canonical: "/myself",
+  },
+};
 
 //  强制在 build 时生成 HTML
 export const dynamic = "force-static";

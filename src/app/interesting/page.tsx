@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
+
 import BlogContainer from "@/app/components/layout/BlogContainer";
 import Container from "@/app/components/layout/Container";
 import PostHeader from "@/app/components/ui/PostHeader";
 import { useGetBlogListByYear } from "../hooks/modules/useGetBlogListByYear";
+
+export const metadata: Metadata = {
+  title: "Inspiration | ZeroAnon",
+  description:
+    "ZeroAnon 收集和制作的一些有趣内容，包含动画、CSS 实验与零散灵感。",
+  alternates: {
+    canonical: "/interesting",
+  },
+};
 
 //  强制在 build 时生成 HTML
 export const dynamic = "force-static";
