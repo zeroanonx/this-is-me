@@ -60,10 +60,7 @@ const USES_SECTIONS: readonly UsesSection[] = [
             "https://marketplace.visualstudio.com/items?itemName=ZeroAnon.z-code-tools"
           ),
           " -> ",
-          link(
-            "配置",
-            "https://github.com/zeroanonx/atom-vscode-setting/blob/main/.vscode/settings.json"
-          ),
+          link("配置", "https://github.com/zeroanonx/z-vscode-setting"),
         ],
       },
     ],
