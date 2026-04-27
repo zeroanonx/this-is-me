@@ -6,7 +6,7 @@ import { slugify } from "@/app/utils";
 import { CodeGroup } from "./modules/CodeGroup";
 import { CodeSlot } from "./modules/CodeSlot";
 import ImagePreview from "../ui/ImagePreview";
-import ZeroLink from "../ui/ZeroLink";
+import ZeroLink from "@/app/components/ui/ZeroLink";
 
 type MDXComponents = ComponentProps<typeof MDXRemote>["components"];
 export type CodeItemProps = {
@@ -39,10 +39,19 @@ const createHeading = (level: number) => {
   };
 };
 
+type MDXLinkProps = ComponentProps<"a">;
+
+const MDXLink = ({ title, ...props }: MDXLinkProps) => {
+  const theme = title?.startsWith("--") ? title : undefined;
+
+  return <ZeroLink {...props} theme={theme} />;
+};
+
 export const mdxServerComponents: MDXComponents = {
   pre: Pre,
   CodeGroup,
   img: ImagePreview,
+  a: MDXLink,
   h1: createHeading(1),
   h2: createHeading(2),
   h3: createHeading(3),
