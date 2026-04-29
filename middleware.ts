@@ -23,6 +23,7 @@ export function middleware(request: NextRequest) {
   // 如果访问者来自中国大陆，并且当前访问的是主站，则重定向到国内站
   if (CHINA_COUNTRY_CODES.has(country) && host === MAIN_HOST) {
     const url = request.nextUrl.clone();
+    url.protocol = "http:";
     url.host = CN_HOST;
     return NextResponse.redirect(url, 307);
   }
