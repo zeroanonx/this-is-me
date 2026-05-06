@@ -1,7 +1,5 @@
-# ZeroAnon
-
 <p align="center">
-  <img src="./public/assets/images/me/avatar.jpeg" alt="ZeroAnon avatar" width="88" height="88" style="border-radius: 50%;" />
+  <img src="./public/assets/images/me/avatar-circle.svg" alt="ZeroAnon avatar" width="88" height="88" />
 </p>
 
 <p align="center">
@@ -36,10 +34,6 @@
   <a href="https://github.com/zeroanonx">GitHub</a> ·
   <a href="mailto:2188817393@qq.com">Email</a> ·
   <a href="https://zeroanon.com/rss.xml">RSS</a>
-</p>
-
-<p align="center">
-  19 篇文章 · 2.2w 字 · 623 天
 </p>
 
 ---
