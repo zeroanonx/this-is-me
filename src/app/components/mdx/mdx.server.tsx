@@ -7,6 +7,7 @@ import { CodeGroup } from "./modules/CodeGroup";
 import { CodeSlot } from "./modules/CodeSlot";
 import ImagePreview from "../ui/ImagePreview";
 import ZeroLink from "@/app/components/ui/ZeroLink";
+import HomePage from "@/app/components/layout/HomePage";
 
 type MDXComponents = ComponentProps<typeof MDXRemote>["components"];
 export type CodeItemProps = {
@@ -55,5 +56,6 @@ export const mdxServerComponents: MDXComponents = {
   h1: createHeading(1),
   h2: createHeading(2),
   h3: createHeading(3),
+  HomePage,
   h4: createHeading(4),
 };
