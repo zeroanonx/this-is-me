@@ -57,7 +57,8 @@ export function middleware(request: NextRequest) {
 
   // 如果访问者来自中国大陆，并且当前访问的是主站，则重定向到国内站
   if (isChinaVisitor && host === MAIN_HOST) {
-    return redirectToHost(request, CN_HOST, "http:");
+    return redirectToHost(request, MAIN_HOST, "https:");
+    // return redirectToHost(request, CN_HOST, "http:");
   }
 
   // 如果访问者不在中国大陆，并且当前访问的是国内站，则重定向回国际站
