@@ -1,55 +1,53 @@
 import { NextRequest } from "next/server";
 import { runChatPipeline } from "@/app/server/pipeline";
+import { checkRateLimit } from "@/app/server/rate-limit";
+import { ChatRequestSchema } from "@/app/server/schema";
 
-type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
-
-const sessions = new Map<string, ChatMessage[]>();
-
-export const runtime = "edge";
+export const runtime = "nodejs";
+const MAX_CONTEXT_MESSAGES = 15;
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const sessionId: string = body.sessionId ?? "default";
-    const newMessages: ChatMessage[] = body.messages ?? [];
+    const body = ChatRequestSchema.parse(await req.json());
 
     // 限流（可选，防刷）
-    const ip =
-      req.headers.get("x-forwarded-for") ??
-      req.headers.get("cf-connecting-ip") ??
-      "anonymous";
+    const ip = getClientIp(req);
     checkRateLimit(ip);
 
-    // 获取历史消息
-    const history = sessions.get(sessionId) ?? [];
-
-    // 合并历史 + 本次消息
-    const allMessages = [...history, ...newMessages] as ChatMessage[];
-
-    // 更新内存会话
-    sessions.set(sessionId, allMessages);
-
-    // 流式调用 Cloudflare AI
-    const stream = await runChatPipeline(allMessages.slice(-15)); // 只传最后 15 条，防止上下文过长
+    // 流式调用当前配置的 AI provider
+    const stream = await runChatPipeline(
+      body.messages.slice(-MAX_CONTEXT_MESSAGES)
+    );
 
     return new Response(stream, {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
       },
     });
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Chat request failed";
+
+    return Response.json(
+      {
+        error: message,
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }
 
-// 简单限流
-const map = new Map<string, number>();
-function checkRateLimit(ip: string) {
-  const now = Date.now();
-  const last = map.get(ip) ?? 0;
-  if (now - last < 1500) throw new Error("Too many requests");
-  map.set(ip, now);
+/**
+ * @function 从常见代理头里读取客户端 IP，用于轻量限流。
+ */
+function getClientIp(req: NextRequest): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    req.headers.get("cf-connecting-ip") ??
+    "anonymous"
+  );
 }

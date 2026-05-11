@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Icon } from "@iconify-icon/react";
 import dayjs from "dayjs";
 
-import AIEntry from "@/app/components/ai/AIEntry";
 import HomeHero from "@/app/components/layout/HomeHero";
 import { FEATURED_SKILLS } from "@/app/constants/modules/home";
 import ZeroLink from "@/app/components/ui/ZeroLink";
@@ -95,7 +94,7 @@ export default function Index() {
               <div className="mt-3 space-y-2.5 text-[12.5px] leading-6">
                 <p>
                   你好，我是{" "}
-                  <span className="text-(--accent-mint)">ZeroAnon</span>
+                  <span className="text-(--accent-primary)">ZeroAnon</span>
                   ，一个狂热的开源爱好者。
                 </p>
                 <p>
@@ -183,7 +182,6 @@ export default function Index() {
           </section>
         </section>
       </main>
-      <AIEntry />
     </>
   );
 }

@@ -99,7 +99,13 @@ export function useChat(): UseChatReturn {
       });
 
       if (!res.ok) {
-        throw new Error(`Request failed: ${res.status}`);
+        const data = await res.json().catch(() => null);
+        const message =
+          typeof data?.error === "string"
+            ? data.error
+            : `Request failed: ${res.status}`;
+
+        throw new Error(message);
       }
 
       if (!res.body) throw new Error("No response body");

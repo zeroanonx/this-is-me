@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useChat } from "@/app/hooks/modules/useChat";
 import { useGirlMemory } from "@/app/hooks/modules/useGirlMemory";
 import styled from "styled-components";
+import ReactMarkdown from "react-markdown";
 
 const GirlComponents = styled.div`
   .chat-scroll {
@@ -38,6 +39,21 @@ const GirlComponents = styled.div`
     color: var(--chat-bubble-text);
     border-radius: 18px 18px 18px 6px;
   }
+
+  .chat-bubble p {
+    margin: 0;
+  }
+
+  .chat-bubble a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .chat-bubble ul,
+  .chat-bubble ol {
+    margin: 4px 0 0;
+    padding-left: 1.2em;
+  }
 `;
 export default function ChatGirl() {
   const { messages, input, setInput, send, loading } = useChat();
@@ -68,7 +84,29 @@ export default function ChatGirl() {
               m.role === "user" ? "flex justify-end" : "flex justify-start"
             }`}
           >
-            {m.content && <div className="chat-bubble">{m.content}</div>}
+            {m.content && (
+              <div className="chat-bubble">
+                <ReactMarkdown
+                  components={{
+                    a: ({ children, href }) => (
+                      <a
+                        href={href}
+                        target={href?.startsWith("http") ? "_blank" : undefined}
+                        rel={
+                          href?.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                      >
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {m.content}
+                </ReactMarkdown>
+              </div>
+            )}
           </div>
         ))}
         {loading && (
