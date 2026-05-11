@@ -29,7 +29,9 @@ export async function runChatPipeline(
   const searchResults = await searchIndex(userLastMessage, 3, options?.baseUrl);
 
   if (searchResults.length > 0) {
-    return streamText(formatSearchResultsAnswer(searchResults, options?.baseUrl));
+    return streamText(
+      formatSearchResultsAnswer(searchResults, options?.baseUrl)
+    );
   }
 
   const contextText = await getSearchResults(messages, options?.baseUrl);

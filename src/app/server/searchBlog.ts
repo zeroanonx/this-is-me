@@ -10,7 +10,9 @@ export type SearchEntry = {
 let index: SearchEntry[] | null = null;
 
 // 初始化加载 JSON（Edge-safe，用 fetch）
-export async function loadSearchIndex(baseUrl?: string): Promise<SearchEntry[]> {
+export async function loadSearchIndex(
+  baseUrl?: string
+): Promise<SearchEntry[]> {
   if (index) return index;
 
   const siteUrl = baseUrl ?? process.env.NEXT_PUBLIC_BASE_URL;
