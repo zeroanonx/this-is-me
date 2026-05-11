@@ -29,8 +29,10 @@ export async function POST(req: NextRequest) {
     // 更新内存会话
     sessions.set(sessionId, allMessages);
 
-    // 流式调用 Cloudflare AI
-    const stream = await runChatPipeline(allMessages.slice(-15)); // 只传最后 15 条，防止上下文过长
+    // 流式调用聊天流水线
+    const stream = await runChatPipeline(allMessages.slice(-15), {
+      baseUrl: req.nextUrl.origin,
+    }); // 只传最后 15 条，防止上下文过长
 
     return new Response(stream, {
       headers: {
