@@ -121,7 +121,7 @@ export function SearchDialog() {
             </div>
 
             {/* List */}
-            <Command.List className="max-h-[420px] overflow-y-auto py-2">
+            <Command.List className="max-h-105 overflow-y-auto py-2">
               {query && results.length === 0 && (
                 <Command.Empty className="px-6 py-8 text-center text-sm text-muted-foreground">
                   <p className="font-medium mb-1">No results found</p>
