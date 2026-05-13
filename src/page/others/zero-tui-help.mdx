@@ -6,88 +6,100 @@ duration: 14min
 
 ## 项目简介
 
-![zero-tui](/assets/images/zero/zero-tui.png)
+**zero-tui** 是一款运行在终端里的 **TUI**（文本用户界面）工具，用来把分散在各 AI CLI / Agent 里的 **skills** 做一次「集中安放」：**安装、浏览、详情、配置软链目标、和本机其它工具目录对齐**。它不替代 Claude / Cursor / Codex 等客户端本身，而是给你一条从终端进入的、可键盘操作的管理入口。
 
-**zero-tui** 是一款运行在终端里的 **TUI**（文本用户界面）工具，用来把分散在各 AI CLI / Agent 里的 **skills** 集中管理起来。你可以在里面完成这些事情：
+技术栈上，它由 **Node.js**、**Ink**、**React** 与 **meow** 等组装而成：上方是只读的历史与命令输出区，底部是输入条与命令面板，整体交互接近「固定输入条 + 滚动回溯」的现代 CLI 体验。
 
-- 安装与导入 skill
-- 浏览本地 skill 列表与详情
-- 维护各家 CLI 的 skills 目录映射
-- 把全局 skill 仓通过软链同步回其它工具
+如果你已经习惯用 **skills.sh**、各家的 skills 目录、以及多处软链同步，zero-tui 把其中**重复、易忘、路径易乱**的那部分，收敛到 **`~/.zero-tui` 这一个用户目录**里。
 
-它并不替代 Claude、Cursor、Codex 之类的客户端，而是给你一个**纯键盘操作、统一入口、路径清晰**的管理层。
+## zero-tui 能做什么
 
-如果你已经习惯使用 **skills.sh**、多套 skills 目录、以及各处软链同步，zero-tui 做的就是把其中**重复、易忘、路径容易混乱**的部分，统一收敛到 **`~/.zero-tui`** 这一处用户目录里。
+当前版本主要提供这些能力：
 
-## 安装方式
+- **统一 skill 仓库**：默认把已安装的 skill 落在 `~/.zero-tui/skills`，作为「真相源」目录。
+- **从远程按名安装**：支持按名称从 **skills.sh** 生态检索并安装（`/skill add <name>`）。
+- **从本地路径或 Git 添加**：支持本地目录、git 地址等形式接入（`/skill add`）。
+- **本机目录批量导入**：把本机已有 skill 包拷入全局仓（`/skill import`）。
+- **一键回流**：从各三方 CLI 默认（及配置里的）skills 目录，把尚未在全局仓中的 skill 拷贝进来（`/skill init`）。
+- **查找与列表**：在注册中心侧搜索、在本地列出已安装项并查看详情（`/skill find`、`/skill list`、`/skill info`）。
+- **删除本地安装**：移除全局仓中的某个 skill（`/skill remove`）。
+- **路径与资源管理器**：打印全局 skills 路径，并可选择在系统里打开（`/skill path`）。
+- **软链目标配置**：维护 `linkTargetDirs`，把三方 CLI 的 skills **根目录**写进配置文件（`/skill target add`、`/skill targets`）。
+- **软链同步**：把 `~/.zero-tui/skills` 下的内容同步为各目标目录中的链接（`/skill update`）。
+- **会话命令**：查看帮助、清空时间线、退出应用（`/help`、`/clear`、`/exit`）。
 
-```bash
-npm install --global zero-tui
-```
-
-安装完成后，在终端执行 **`z`** 即可启动。若你使用的是 **pnpm** 或 **yarn**，请改用对应的全局安装命令，并确保全局 `node_modules/.bin` 已加入 `PATH`。
-
-## 快速理解它的工作方式
-
-可以先用一句话理解 zero-tui：
-
-> **把 `~/.zero-tui/skills` 当成唯一真相源，再把它同步回各个 AI 工具。**
-
-它的典型关系如下：
-
-| 角色     | 位置                                          | 作用                                      |
-| -------- | --------------------------------------------- | ----------------------------------------- |
-| 全局仓   | `~/.zero-tui/skills`                          | 统一存放你真正安装下来的 skills           |
-| 配置文件 | `~/.zero-tui/config.json`                     | 保存 `linkTargetDirs` 等用户配置          |
-| 目标目录 | 例如 Claude / Codex / Cursor 的 skills 根目录 | 由 `/skill update` 铺设软链，给各工具消费 |
+启动时若配置中缺少内置三方键，会尝试**补全默认路径**（不覆盖你已写入的值）。内置名称包括：**claude、codex、cursor、agents、opencode**。
 
 ## 数据放在哪里
 
-| 路径                      | 含义                                                                      |
-| ------------------------- | ------------------------------------------------------------------------- |
-| `~/.zero-tui/skills`      | 全局 skill 安装目录（add / install / import / init 的主要落点）           |
+| 路径 | 含义 |
+| ---- | ---- |
+| `~/.zero-tui/skills` | 全局 skill 安装目录（add / install / import / init 的主要落点） |
 | `~/.zero-tui/config.json` | 用户配置；其中 `linkTargetDirs` 记录各三方 CLI 的 skills **根目录**覆盖项 |
 
 若你之前使用过旧目录下的配置，需要自行迁移到 `~/.zero-tui`（例如将原目录改名或合并），应用不会自动搬移。
 
+## 如何开始使用
+
+### 1. 安装与启动
+
+全局安装包名一般为 **`zero-tui`**，安装后在终端执行：
+
+```bash
+zero
+```
+
+要求 **Node.js ≥ 20**，且需在支持 **raw mode** 的真实 TTY 中运行（普通终端即可；部分非交互环境可能无法启动 TUI）。
+
+### 2. 空状态与首屏
+
+首次进入时，首屏会展示 **ZERO** 字符画品牌、`zero-tui` 标题与简短说明。你可以：
+
+- **直接输入自然语言任务**并回车（会话记录用途，后续可由编排对接具体 skill）；
+- 或 **键入 `/` 唤出命令面板**，用 **↑↓** 选择、**Tab** 补全、**Enter** 执行。
+
+### 3. 命令面板与帮助
+
+- 输入 **`/`** 打开命令面板，浏览所有已注册的 slash 命令。
+- 输入 **`/help`** 查看分组说明、配置提示与命令列表摘要。
+
+底部 Footer 会提示常用快捷键（选择、补全、提交、关闭面板、退出等）。
+
 ## Slash 命令一览
 
-下面这部分按“命令 / 用途 / 常见参数 / 备注”整理，方便查阅。具体行为仍以终端内 **`/help`** 为准。
+以下为当前版本的命令触发与简要说明（具体用法以终端内 `/help` 为准）。
 
 ### Skill 相关
 
-| 命令                                         | 用途                              | 常见参数                       | 备注                                               |
-| -------------------------------------------- | --------------------------------- | ------------------------------ | -------------------------------------------------- |
-| `/skill add <name \| local-path \| git-url>` | 安装或接入一个 skill              | skill 名称、本地目录、git 地址 | 既支持从 **skills.sh** 下载，也支持本地 / git 来源 |
-| `/skill import <local-dir>`                  | 从本机目录导入 skill 到 zero      | 本地目录                       | 适合把单个 skill 包或一个批量目录收进全局仓        |
-| `/skill init`                                | 从其它 CLI 的 skills 目录回流导入 | 无                             | 常用于接手旧环境，或把各处分散的 skill 收口        |
-| `/skill remove [name]`                       | 删除一个已安装的本地 skill        | skill 名称                     | 删除的是 `~/.zero-tui/skills` 中的对应内容         |
-| `/skill path`                                | 查看全局 skill 仓路径             | 无                             | 可顺手在系统资源管理器里打开                       |
-| `/skill target add [name] [absolute-dir]`    | 配置一个目标 skills 根目录        | 名称、绝对路径                 | 会写入 `config.json` 的 `linkTargetDirs`           |
-| `/skill targets`                             | 查看所有目标路径与解析结果        | 无                             | 用来确认默认路径和自定义覆盖是否正确               |
-| `/skill find <keyword>`                      | 搜索可安装 skill                  | 关键词                         | 基于 **skills.sh / skills CLI** 搜索               |
-| `/skill list`                                | 查看本地已安装 skill 列表         | 无                             | 通常配合详情查看一起使用                           |
-| `/skill info [name]`                         | 查看单个 skill 的详细信息         | skill 名称                     | 适合确认来源、描述和安装状态                       |
-| `/skill update [target \| all]`              | 把全局 skill 仓同步为软链         | 目标名或 `all`                 | 真正执行“铺链接”的命令                             |
+| 命令 | 说明 |
+| ---- | ---- |
+| `/skill add <name \| local-path \| git-url>` | 按名称从 skills.sh 下载，或从本地路径 / git 仓库添加 skill |
+| `/skill import <local-dir>` | 从本机目录导入 skill 到 zero（支持单包或批量子目录） |
+| `/skill init` | 一键从各三方 CLI 的 skills 目录回流导入到 zero |
+| `/skill remove [name]` | 删除一个已安装的本地 skill |
+| `/skill path` | 输出 zero 的全局 skills 目录，并可选择在系统中打开 |
+| `/skill target add [name] [absolute-dir]` | 新增三方 CLI 的 skills 根目录，写入 `~/.zero-tui/config.json` 的 `linkTargetDirs`（可交互或一步带参） |
+| `/skill targets` | 列出三方 CLI / 配置相关路径；可选在系统中打开；**软链同步**请用 `/skill update` |
+| `/skill find <keyword>` | 从 skills.sh（skills CLI）搜索可安装 skill |
+| `/skill list` | 列出已安装 skills，选中后查看详情 |
+| `/skill info [name]` | 查看单个 skill 的详细信息 |
+| `/skill update [target \| all]` | 将 zero skills **软链**到第三方 CLI 等目标（支持单选或全部） |
 
 ### 会话与其它
 
-| 命令     | 用途                      | 常见参数 | 备注                    |
-| -------- | ------------------------- | -------- | ----------------------- |
-| `/help`  | 查看命令分组与快捷说明    | 无       | 第一次用时最值得先看    |
-| `/clear` | 清空当前时间线 / 会话历史 | 无       | 不会影响本地 skill 数据 |
-| `/exit`  | 退出 zero-tui             | 无       | 等同于结束当前应用会话  |
+| 命令 | 说明 |
+| ---- | ---- |
+| `/help` | 查看分组命令列表与快捷说明 |
+| `/clear` | 清空对话历史 |
+| `/exit` | 退出 zero |
 
 ## 典型工作流建议
 
-| 场景                        | 推荐做法                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| 第一次使用                  | 启动 `z` 后先执行 `/help`，确认 `~/.zero-tui` 和 `config.json` 已生成 |
-| 想安装一个新 skill          | 先 `/skill find` 搜关键词，再 `/skill add <name>` 安装                |
-| 想接入本地或 git skill      | 直接使用 `/skill add <local-path \| git-url>`                         |
-| 想统一旧环境的 skill        | 先 `/skill init` 回流，再 `/skill update` 铺回软链                    |
-| 想校准路径是否正确          | 先看 `/skill targets`，确认后再跑 `/skill update`                     |
-| 想自定义某个 CLI 的技能目录 | 使用 `/skill target add` 写入自定义绝对路径                           |
+1. **第一次用**：执行 `zero`，输入 `/help`，确认本机 `~/.zero-tui` 与 `config.json` 已按提示生成或补全。
+2. **装一个 skill**：`/skill find` 搜名字，或 `/skill add <name>`；也可用 `/skill add` 跟本地路径或 git。
+3. **对齐各编辑器里的 skills 目录**：先 `/skill targets` 看清解析后的路径，再用 **`/skill update`** 做软链同步。
+4. **自定义某家 CLI 的 skills 根路径**：`/skill target add`，把绝对路径写入 `linkTargetDirs`。
+5. **从旧环境迁技能**：在本机已有各工具 skills 目录时，用 **`/skill init`** 回流到 `~/.zero-tui/skills`，再 **`/skill update`** 推回链接。
 
 ## 适合哪些人使用
 
@@ -96,20 +108,32 @@ npm install --global zero-tui
 - 需要维护 **`linkTargetDirs`**、在多台机器或多块磁盘间**对齐 skills 物理位置**的人。
 - 喜欢 **Ink 系 TUI**、希望「历史区固定 + 底部输入不被顶掉」的人。
 
+## 安装方式
+
+```bash
+npm install --global zero-tui
+```
+
+安装完成后在终端执行 **`zero`** 即可。若使用 **pnpm / yarn**，请使用对应的全局安装命令；确保全局 `node_modules/.bin` 在 `PATH` 中。
+
 ## 使用建议
 
-如果你是第一次打开 zero-tui，建议按下面顺序**摸一遍**，会比死记命令更快：
+如果你是第一次打开 zero-tui，建议按下面顺序**摸一遍**，比死记命令更快：
 
 1. 先 **`/help`**，读一眼配置路径和全局 skill 仓位置。
 2. 再 **`/skill list`** 和 **`/skill path`**，确认本机 `skills` 目录结构。
 3. 试一次 **`/skill targets`**，理解默认与 config 覆盖后的实际路径。
 4. 最后在需要时跑 **`/skill update`**，感受软链同步过程。
 
-zero-tui 最适合的使用方式，不是一次背全参数，而是把 **`~/.zero-tui` 当成唯一真相源**，需要时再用 **`/skill update`** 把链接铺回各个 CLI。
+zero-tui 最适合的用法，不是一次背全参数，而是把 **`~/.zero-tui` 当唯一真相源**，需要时 **`/skill update` 把链接铺回各 CLI**。
 
 ## 联系与反馈
 
 如果你有功能建议、交互问题或希望补充新的 skill 工作流，欢迎通过下面的方式联系：
 
-- 问题反馈下方评论区: [https://zeroanon.com/others/zero-tui-help](https://zeroanon.com/others/zero-tui-help)
-- 微信: [https://zeroanon.com/others/wechat](https://zeroanon.com/others/wechat)
+- 评论: [https://zeroanon.com/others/zero-tui-help](https://zeroanon.com/others/zero-tui-help)
+- 微信: [https://zeroanon.com/wechat](https://zeroanon.com/wechat)
+
+## 最后一句
+
+**zero-tui：让 AI skills 在终端里有一处可沉淀、可同步、可对齐的「家」。**
