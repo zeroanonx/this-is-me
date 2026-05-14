@@ -13,26 +13,15 @@ duration: 14min
 
 ### 1. 安装与启动
 
+```bash
+npm install --global zero-tui
+```
+
 全局安装包名为 **`zero-tui`**，安装后在终端执行：
 
 ```bash
 zero
 ```
-
-要求 **Node.js ≥ 20**，且需在支持 **raw mode** 的真实 TTY 中运行（普通终端即可；部分非交互环境可能无法启动 TUI）。
-
-### 2. 空状态与首屏
-
-首次进入时，首屏会展示 **ZERO** 字符画品牌、`zero-tui` 标题与简短说明。你可以：
-
--  **键入 `/` 唤出命令面板**，用 **↑↓** 选择、**Tab** 补全、**Enter** 执行。
-
-### 3. 命令面板与帮助
-
-- 输入 **`/`** 打开命令面板，浏览所有已注册的 slash 命令。
-- 输入 **`/help`** 查看分组说明、配置提示与命令列表摘要。
-
-底部 Footer 会提示常用快捷键（选择、补全、提交、关闭面板、退出等）。
 
 ## Slash 命令一览
 
@@ -75,13 +64,6 @@ zero
 - 同时使用多种 **AI CLI / Agent**，并希望 **skills 目录别各写一套**的人。
 - 经常用 **skills.sh** 生态，想要终端里**可键盘操作**的安装与查阅体验的人。
 
-## 安装方式
-
-```bash
-npm install --global zero-tui
-```
-
-安装完成后在终端执行 **`zero`** 即可。若使用 **pnpm / yarn**，请使用对应的全局安装命令；确保全局 `node_modules/.bin` 在 `PATH` 中。
 
 ## 数据放在哪里
 
@@ -94,7 +76,5 @@ npm install --global zero-tui
 
 ## 联系与反馈
 
-如果你有功能建议、交互问题或希望补充新的 skill 工作流，欢迎通过下面的方式联系：
+如果你有功能建议、交互问题或希望补充新的 skill 工作流，欢迎在下面的评论区留言。
 
-- 评论: [https://zeroanon.com/others/zero-tui-help](https://zeroanon.com/others/zero-tui-help)
-- 微信: [https://zeroanon.com/wechat](https://zeroanon.com/wechat)
