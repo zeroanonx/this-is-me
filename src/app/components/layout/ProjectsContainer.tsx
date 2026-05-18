@@ -49,7 +49,7 @@ export default function ProjectsContainer({ content }: Props) {
                     bg-background
                     p-3
                     transition-all
-                    hover:-translate-y-0.5
+                    hover:-translate-y-0.5 
                     hover:bg-[#8881]
                   "
                 >
